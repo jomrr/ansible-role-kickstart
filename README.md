@@ -162,14 +162,17 @@ None.
 
 ```yaml
 ---
-# role: ansible-role-kickstart
-# play: kickstart
-# file: kickstart.yml
+# file: ansible/playbooks/kickstart.yml
 
 - hosts: all
-  gather_facts: true
+  gather_facts: false
+  become: true
+  vars:
+    ansible_os_family: RedHat
+    ansible_distribution: Fedora
+    ansible_distribution_major_version: 36
   roles:
-    - role: ansible-role-kickstart
+    - kickstart
 ```
 
 ## License and Author
