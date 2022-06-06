@@ -2,7 +2,7 @@
 
 ![GitHub](https://img.shields.io/github/license/jam82/ansible-role-kickstart) ![GitHub last commit](https://img.shields.io/github/last-commit/jam82/ansible-role-kickstart) ![GitHub issues](https://img.shields.io/github/issues-raw/jam82/ansible-role-kickstart) ![Travis (.com) branch](https://img.shields.io/travis/com/jam82/ansible-role-kickstart/main?label=travis) [![Molecule](https://github.com/jam82/ansible-role-kickstart/actions/workflows/molecule.yml/badge.svg)](https://github.com/jam82/ansible-role-kickstart/actions/workflows/molecule.yml)
 
-**Ansible role for setting up kickstart.**
+**Ansible role for creating kickstart files on remote host.**
 
 ## Supported Platforms
 
