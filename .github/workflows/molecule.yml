@@ -20,22 +20,14 @@ jobs:
       fail-fast: false
       matrix:
         use:
-          - img: alpine
-            tag: latest
-          - img: archlinux
-            tag: latest
-          - img: centos
-            tag: latest
-          - img: debian
+          - img: almalinux
             tag: latest
           - img: fedora
             tag: latest
           - img: opensuse
             tag: latest
-          - img: oraclelinux
-            tag: latest
-          - img: ubuntu
-            tag: latest
+          - img: opensuse
+            tag: tumbleweed
     steps:
       - name: Checkout
         uses: actions/checkout@v2
