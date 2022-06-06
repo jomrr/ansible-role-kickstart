@@ -1,0 +1,11 @@
+---
+# role: ansible-role-kickstart
+# file: requirements.yml
+
+collections: []
+
+roles: []
+
+# - src: https://github.com/jam82/ansible-role-baseline.git
+#   name: baseline
+#   version: main

@@ -1,0 +1,12 @@
+---
+# role: ansible-role-kickstart
+# file: molecule/resources/playbooks/converge.yml
+
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    baseline_role_enabled: false
+    kickstart_role_enabled: true
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"

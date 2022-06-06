@@ -8,15 +8,8 @@
 
 | OS Family | Distribution  | Latest | Supported Version(s) | Comment |
 |-----------|---------------|--------|----------------------|---------|
-| Alpine    | Alpine        | :heavy_check_mark: | 3.16 | |
-| Archlinux | Archlinux     | :heavy_check_mark: | - | |
-|           | Manjaro       | :heavy_check_mark: | - | |
-| Debian    | Debian        | :heavy_check_mark: | 11 | |
-|           | Ubuntu        | :heavy_check_mark: | 22.04 | |
-| RedHat    | Almalinux     | :heavy_check_mark: | 9 | |
+| RedHat    | Almalinux     | :heavy_check_mark: | 8, 9 | |
 |           | Fedora        | :heavy_check_mark: | 35, 36, Rawhide | |
-| Suse      | OpenSuse Leap | :heavy_check_mark: | 15.3 | |
-|           | Tumbleweed    | :heavy_check_mark: | - | |
 
 ## Requirements
 

@@ -1,0 +1,12 @@
+---
+# role: ansible-role-kickstart
+# file: molecule/resources/playbooks/verify.yml
+
+- name: Verify
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: "Assertions"
+      ansible.builtin.assert:
+        that: true

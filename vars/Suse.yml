@@ -1,0 +1,6 @@
+---
+# role: ansible-role-kickstart
+# file: vars/Suse.yml
+
+kickstart_packages:
+  - python3-pykickstart
