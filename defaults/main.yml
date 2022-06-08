@@ -11,6 +11,13 @@ kickstart_host: "{{ inventory_hostname }}"
 # at this path on kickstart_host
 kickstart_hostpath: "/tmp/{{ inventory_hostname }}.ks"
 
+# generate reprducable MAC addresses for network cards based on hostname
+kickstart_gen_mac_from_name: true
+
+# number of MAC addresses to generate
+# can be referenced in kickstart with _vm.macs[0], _vm.macs[1], etc.
+kickstart_mac_count: 1
+
 # see ouput of: `ksvalidator -l` for supported versions => FC3-6, F7-37, RHEL3-9
 kickstart_version: RHEL8
 

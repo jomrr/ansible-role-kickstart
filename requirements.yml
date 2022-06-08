@@ -2,7 +2,9 @@
 # role: ansible-role-kickstart
 # file: requirements.yml
 
-collections: []
+collections:
+  - name: git+https://github.com/jam82/ansible-collection-general.git
+    version: main
 
 roles: []
 
