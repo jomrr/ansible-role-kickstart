@@ -1,0 +1,33 @@
+---
+# role: ansible-role-kickstart
+# file: tasks/create.yml
+
+- name: "Generate MAC address(es)"
+  become: false
+  delegate_to: localhost
+  jam82.general.gen_mac_from_name:
+    name: "{{ inventory_hostname }}"
+    count: "{{ kickstart_mac_count }}"
+  register: _vm
+  when: kickstart_gen_mac_from_name | bool
+
+- name: "Debug MAC address(es)"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.debug:
+    msg: "{{ _vm }}"
+  when: kickstart_gen_mac_from_name | bool
+
+- name: "Create kickstart file {{ kickstart_hostpath }}"
+  become: false
+  delegate_to: "{{ kickstart_host }}"
+  ansible.builtin.template:
+    src: kickstart.cfg.j2
+    dest: "{{ kickstart_hostpath }}"
+    mode: 0660
+
+- name: "Validate kickstart file {{ kickstart_hostpath }}"
+  become: false
+  delegate_to: "{{ kickstart_host }}"
+  ansible.builtin.command: ksvalidator --version={{ kickstart_version }} {{ kickstart_hostpath }}
+  changed_when: false
