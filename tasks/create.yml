@@ -25,9 +25,4 @@
     src: kickstart.cfg.j2
     dest: "{{ kickstart_hostpath }}"
     mode: 0660
-
-- name: "Validate kickstart file {{ kickstart_hostpath }}"
-  become: false
-  delegate_to: "{{ kickstart_host }}"
-  ansible.builtin.command: ksvalidator --version={{ kickstart_version }} {{ kickstart_hostpath }}
-  changed_when: false
+    validate: ksvalidator --version={{ kickstart_version }} %s
