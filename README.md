@@ -148,7 +148,7 @@ kickstart_groups: []
 kickstart_users: []
 
 # root password
-kickstart_rootpw: "rootpw Strunz3nOed=! --plaintext"
+kickstart_rootpw: "rootpw Strunz3nOed=7d5+p --plaintext"
 
 # ssh keys
 kickstart_sshkeys: []
