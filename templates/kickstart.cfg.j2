@@ -1,1 +1,206 @@
+# kickstart file
+# path: {{ kickstart_hostpath }}.cfg
+
+{% if kickstart_template | default('') | length > 0 %}
 {{ kickstart_template }}
+{% else %}
+eula        --agreed
+
+# initial setup
+firstboot   --disable
+{% if kickstart_target | default('') | length > 0 %}
+
+# installation environment
+{{ kickstart_target }}
+{% endif %}
+{% if kickstart_bootloader | default('') | length > 0 %}
+
+# bootloader configuration
+{{ kickstart_bootloader }}
+{% endif %}
+{% if kickstart_url | default('') | length > 0 %}
+
+# installation mirror
+{{ kickstart_url }}
+{% endif %}
+{% if kickstart_repos | default([]) | length > 0 %}
+
+# repository configuration
+{%  for repo in kickstart_repos %}
+{{ repo }}
+{%  endfor %}
+{% endif %}
+{% if kickstart_partitions | default([]) | length > 0 %}
+
+# partitions
+{%  for part in kickstart_partitions %}
+{{ part }}
+{%  endfor %}
+{%  if kickstart_btrfs_volumes | default([]) | length > 0 %}
+
+# btrfs volumes
+{%      for btrfs_volume in kickstart_btrfs_volumes %}
+{{ btrfs_volume }}
+{%      endfor %}
+{%  endif %}
+{%  if kickstart_btrfs_subvolumes | default([]) | length > 0 %}
+
+# btrfs subvolumes
+{%      for btrfs_subvolume in kickstart_btrfs_subvolumes %}
+{{ btrfs_subvolume }}
+{%      endfor %}
+{%  endif %}
+{%  if kickstart_volgroups | default([]) | length > 0 %}
+
+# volume groups
+{%      for vg in kickstart_volgroups %}
+{{ vg }}
+{%      endfor %}
+{%  endif %}
+{%  if kickstart_logvols | default([]) | length > 0 %}
+
+# logical volumes
+{%      for lv in kickstart_logvols %}
+{{ lv }}
+{%      endfor %}
+{%  endif %}
+{% elif kickstart_autopart | default([]) | length > 0 %}
+
+# automatic partioning
+{{ kickstart_autopart }}
+{% elif kickstart_reqpart | default([]) | length > 0 %}
+
+# required partitions
+{{ kickstart_reqpart }}
+{% endif %}
+{% if kickstart_networks | default([]) | length > 0 %}
+
+# network configuration
+{%  for network in kickstart_networks %}
+{{ network }}
+{%  endfor %}
+{% endif %}
+{% if kickstart_firewall | default('') | length > 0 %}
+
+# firewall
+{{ kickstart_firewall }}
+{% endif %}
+{% if kickstart_services | default('') | length > 0 %}
+
+# services
+{{ kickstart_services }}
+{% endif %}
+{% if kickstart_timezone | default('') | length > 0 %}
+
+# timezone
+{{ kickstart_timezone }}
+{% endif %}
+{% if kickstart_timesource | default('') | length > 0 %}
+
+# timesource: ntp server, pool or disable
+{{ kickstart_timesource }}
+{% endif %}
+{% if kickstart_keyboard | default('') | length > 0 %}
+
+# keyboard
+{{ kickstart_keyboard }}
+{% endif %}
+{% if kickstart_language | default('') | length > 0 %}
+
+# language
+{{ kickstart_language }}
+{% endif %}
+{% if kickstart_selinux | default('') | length > 0 %}
+
+# selinux
+{{ kickstart_selinux }}
+{% endif %}
+{% if kickstart_skipx | default(false) | bool %}
+
+# do not configure x window system
+skipx
+{% endif %}
+{% if kickstart_xconfig | default('') | length > 0 %}
+
+# configure x window system
+{{ kickstart_xconfig }}
+{% endif %}
+{% if kickstart_authselect | default('') | length > 0 %}
+
+# configure authentication
+{{ kickstart_authselect }}
+{% endif %}
+{% if kickstart_groups | default([]) | length > 0 %}
+
+# create user groups
+{%  for group in kickstart_groups %}
+{{ group }}
+{%  endfor %}
+{% endif %}
+{% if kickstart_users | default([]) | length > 0 %}
+
+# create users
+{%  for user in kickstart_users %}
+{{ user }}
+{%  endfor %}
+{% endif %}
+{% if kickstart_rootpw | default('') | length > 0 %}
+
+# root password
+{{ kickstart_rootpw }}
+{% endif %}
+{% if kickstart_sshkeys | default([]) | length > 0 %}
+
+# add ssh key(s) to authorized_keys
+{%  for sshkey in kickstart_sshkeys %}
+{{ sshkey }}
+{%  endfor %}
+{% endif %}
+{% if kickstart_sshpw | default('') | length > 0 %}
+
+# restrict ssh access during installation
+{{ kickstart_sshpw }}
+{% endif %}
+{% if kickstart_realm | default('') | length > 0 %}
+
+# join realm or ad domain
+{{ kickstart_realm }}
+{% endif %}
+{% if kickstart_vnc | default('') | length > 0 %}
+
+# vnc remote access
+{{ kickstart_vnc }}
+{% endif %}
+{% if kickstart_packages | default([]) | length > 0 %}
+
+# packages to install and remove
+%packages   --ignoremissing
+{{ kickstart_packages | join("\n") }}
+%end
+{% endif %}
+
+# disable kernel dumps
+%addon com_redhat_kdump --disable
+%end
+{% if kickstart_pwpolicies | default([]) | length > 0 %}
+
+# password policies
+%anaconda
+{%  for pwpolicy in kickstart_pwpolicies %}
+{{ pwpolicy }}
+{%  endfor %}
+%end
+{% endif %}
+{% if kickstart_post | default('') | length > 0 %}
+
+# post-install actions
+%post --log=/root/postinstall.log
+{{ kickstart_post }}
+%end
+{% endif %}
+{% if kickstart_finish | default('') | length > 0 %}
+
+# system operation after installation
+{{ kickstart_finish }}
+{% endif %}
+{% endif %}

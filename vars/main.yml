@@ -1,0 +1,59 @@
+---
+# role: ansible-role-kickstart
+# file: vars/main.yml
+
+# the default metalink urls
+_metalink:
+  fedora: https://mirrors.fedoraproject.org/mirrorlist
+  rpmfusion: https://mirrors.rpmfusion.org/mirrorlist
+
+# kickstart release version defined by kickstart_version, e.g. F38 = 38
+_version: "{{ kickstart_version | regex_search('[0-9]+') }}"
+
+# predefined mirrors
+kickstart_mirrors:
+  almalinux:
+    urls:
+      appstream:
+        name: AppStream
+      baseos:
+        name: BaseOS
+        url: "{{ kickstart_mirror }}/almalinux/{{ _version }}/BaseOS/\
+          {{ kickstart_arch }}/os/"
+  fedora:
+    everything:
+      name: fedora
+      url: "{{ kickstart_mirror }}/fedora/linux/releases/{{ _version }}/\
+        Everything/{{ kickstart_arch }}/os/"
+      mirrorlist: "{{ _metalink.fedora }}?repo=fedora-{{ _version }}&arch=\
+        {{ kickstart_arch }}"
+    everything_updates:
+      name: fedora-updates
+      url: "{{ kickstart_mirror }}/fedora/linux/updates/{{ _version }}/\
+        Everything/{{ kickstart_arch }}/"
+      mirrorlist: "{{ _metalink.fedora }}?repo=updates-released-f{{ _version }}\
+        &arch={{ kickstart_arch }}"
+    rpmfusion_free:
+      name: rpmfusion-free
+      url: "{{ kickstart_mirror_rpmfusion }}/free/fedora/releases/\
+        {{ _version }}/Everything/{{ kickstart_arch }}/os/"
+      mirrorlist: "{{ _metalink.rpmfusion }}?repo=free-fedora-{{ _version }}\
+        &arch={{ kickstart_arch }}"
+    rpmfusion_free_updates:
+      name: rpmfusion-free-updates
+      url: "{{ kickstart_mirror_rpmfusion }}/free/fedora/updates/\
+        {{ _version }}/Everything/{{ kickstart_arch }}/"
+      mirrorlist: "{{ _metalink.rpmfusion }}?repo=\
+        free-fedora-updates-released-{{ _version }}&arch={{ kickstart_arch }}"
+    rpmfusion_nonfree:
+      name: rpmfusion-nonfree
+      url: "{{ kickstart_mirror_rpmfusion }}/nonfree/fedora/releases/\
+        {{ _version }}/Everything/{{ kickstart_arch }}/os/"
+      mirrorlist: "{{ _metalink.rpmfusion }}?repo=nonfree-fedora-{{ _version }}\
+        &arch={{ kickstart_arch }}"
+    rpmfusion_nonfree_updates:
+      name: rpmfusion-nonfree-updates
+      url: "{{ kickstart_mirror_rpmfusion }}/nonfree/fedora/updates/\
+        {{ _version }}/Everything/{{ kickstart_arch }}/"
+      mirrorlist: "{{ _metalink.rpmfusion }}?repo=nonfree-fedora-updates-\
+        released-{{ _version }}&arch={{ kickstart_arch }}"

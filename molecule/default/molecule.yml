@@ -7,44 +7,51 @@ dependency:
   options:
     requirements-file: requirements.yml
 driver:
-  name: docker
+  name: podman
 lint: |
   set -e
   yamllint .
   ansible-lint
 platforms:
-  - name: almalinux-kickstart
-    image: "jam82/molecule-almalinux:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /run
   - name: fedora-kickstart
     image: "jam82/molecule-fedora:latest"
     command: ""
     pre_build_image: true
-    privileged: true
     tmpfs:
       - /tmp
       - /run
-  - name: opensuse-latest
-    image: "jam82/molecule-opensuse:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-  - name: opensuse-tumbleweed
-    image: "jam82/molecule-opensuse:tumbleweed"
-    command: ""
-    pre_build_image: true
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /run
+#  - name: almalinux-kickstart
+#    image: "jam82/molecule-almalinux:latest"
+#    command: ""
+#    pre_build_image: true
+#    privileged: true
+#    tmpfs:
+#      - /tmp
+#      - /run
+#  - name: fedora-kickstart
+#    image: "jam82/molecule-fedora:latest"
+#    command: ""
+#    pre_build_image: true
+#    privileged: true
+#    tmpfs:
+#      - /tmp
+#      - /run
+#  - name: opensuse-latest
+#    image: "jam82/molecule-opensuse:latest"
+#    command: ""
+#    pre_build_image: true
+#    privileged: true
+#    tmpfs:
+#      - /tmp
+#      - /run
+#  - name: opensuse-tumbleweed
+#    image: "jam82/molecule-opensuse:tumbleweed"
+#    command: ""
+#    pre_build_image: true
+#    privileged: true
+#    tmpfs:
+#      - /tmp
+#      - /run
 provisioner:
   name: ansible
   log: true

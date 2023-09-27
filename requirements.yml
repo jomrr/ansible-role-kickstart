@@ -5,6 +5,7 @@
 collections:
   - name: git+https://github.com/jam82/ansible-collection-general.git
     version: main
+  - name: community.general
 
 roles: []
 

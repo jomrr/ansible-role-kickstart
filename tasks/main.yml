@@ -6,7 +6,6 @@
   ansible.builtin.include_tasks: install.yml
   when: inventory_hostname == kickstart_host
 
-# this has to run before ks create, or macs are undefined
 - name: "Generate MAC address(es)"
   become: false
   delegate_to: localhost
@@ -23,6 +22,12 @@
     msg: "{{ _vm.macs }}"
   when: kickstart_gen_mac_from_name | bool
 
-- name: "Create kickstart file"
-  ansible.builtin.include_tasks: create.yml
+- name: "Create kickstart file {{ kickstart_hostpath }}"
+  become: false
+  delegate_to: "{{ kickstart_host }}"
+  ansible.builtin.template:
+    src: kickstart.cfg.j2
+    dest: "{{ kickstart_hostpath }}"
+    mode: 0660
+    validate: ksvalidator --version={{ kickstart_version }} %s
   when: kickstart_version is defined

@@ -21,7 +21,7 @@
       skip: true
   loop: "{{ query('first_found', params, errors='ignore') }}"
 
-- name: "Install packages for kickstart"
+- name: "Install packages pykickstart"
   ansible.builtin.package:
-    name: "{{ kickstart_packages }}"
+    name: "{{ _kickstart_packages }}"
     state: present
