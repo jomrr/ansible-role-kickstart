@@ -14,7 +14,7 @@ lint: |
   ansible-lint
 platforms:
   - name: fedora-kickstart
-    image: "jam82/molecule-fedora:latest"
+    image: "docker.io/jam82/molecule-fedora:latest"
     command: ""
     pre_build_image: true
     tmpfs:

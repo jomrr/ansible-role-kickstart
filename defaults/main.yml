@@ -40,7 +40,8 @@ kickstart_url: "url --url={{ kickstart_mirrors.fedora.everything.url }}"
 
 # additional repos
 kickstart_repos:
-  - "repo --url={{ kickstart_mirrors.fedora.everything_updates.url }} \
+  - "repo --baseurl={{ kickstart_mirrors.fedora.everything_updates.url }} \
+    --name={{ kickstart_mirrors.fedora.everything_updates.name }} \
     --install --cost=0"
 
 # bootloader settings

@@ -28,6 +28,6 @@
   ansible.builtin.template:
     src: kickstart.cfg.j2
     dest: "{{ kickstart_hostpath }}"
-    mode: 0660
+    mode: '0660'
     validate: ksvalidator --version={{ kickstart_version }} %s
   when: kickstart_version is defined
