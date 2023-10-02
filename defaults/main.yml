@@ -150,10 +150,10 @@ kickstart_keyboard: "keyboard --vckeymap=de --xlayouts=de"
 kickstart_language: "lang en_US.UTF-8 --addsupport=de_DE.UTF-8"
 
 # timezone and ntp configuration, depending on kickstart version
-kickstart_timezone: "timezone Europe/Berlin --utc --ntpservers=de.pool.ntp.org"
+kickstart_timezone: "timezone Europe/Berlin --utc"
 
 # timesource: ntp server, pool or disable
-kickstart_timesource: ''
+kickstart_timesource: 'timesource --ntp-pool de.pool.ntp.org'
 
 # vnc remote access
 kickstart_vnc: ''
