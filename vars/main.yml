@@ -23,13 +23,13 @@ kickstart_mirrors:
   fedora:
     everything:
       name: fedora
-      url: "{{ kickstart_mirror }}/fedora/linux/releases/{{ _version }}/\
+      url: "{{ kickstart_mirror }}/releases/{{ _version }}/\
         Everything/{{ kickstart_arch }}/os/"
       mirrorlist: "{{ _metalink.fedora }}?repo=fedora-{{ _version }}&arch=\
         {{ kickstart_arch }}"
     everything_updates:
       name: fedora-updates
-      url: "{{ kickstart_mirror }}/fedora/linux/updates/{{ _version }}/\
+      url: "{{ kickstart_mirror }}/updates/{{ _version }}/\
         Everything/{{ kickstart_arch }}/"
       mirrorlist: "{{ _metalink.fedora }}?repo=updates-released-f{{ _version }}\
         &arch={{ kickstart_arch }}"

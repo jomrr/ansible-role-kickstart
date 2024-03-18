@@ -18,6 +18,16 @@ firstboot   --disable
 # bootloader configuration
 {{ kickstart_bootloader }}
 {% endif %}
+{% if kickstart_clearpart | default('') | length > 0 %}
+
+# clearpart
+{{ kickstart_clearpart }}
+{% endif %}
+{% if kickstart_zerombr | default('') | length > 0 %}
+
+# zerombr
+{{ kickstart_zerombr }}
+{% endif %}
 {% if kickstart_url | default('') | length > 0 %}
 
 # installation mirror
@@ -115,7 +125,7 @@ firstboot   --disable
 # selinux
 {{ kickstart_selinux }}
 {% endif %}
-{% if kickstart_skipx | default(false) | bool %}
+{% if kickstart_skipx | default(true) | bool %}
 
 # do not configure x window system
 skipx
@@ -178,10 +188,6 @@ skipx
 {{ kickstart_packages | join("\n") }}
 %end
 {% endif %}
-
-# disable kernel dumps
-%addon com_redhat_kdump --disable
-%end
 {% if kickstart_pwpolicies | default([]) | length > 0 %}
 
 # password policies
@@ -193,14 +199,18 @@ skipx
 {% endif %}
 {% if kickstart_post | default('') | length > 0 %}
 
+# disable kernel dumps
+%addon com_redhat_kdump --disable
+%end
+
 # post-install actions
 %post --log=/root/postinstall.log
 {{ kickstart_post }}
 %end
 {% endif %}
-{% if kickstart_finish | default('') | length > 0 %}
+{% if kickstart_finish | default('reboot --eject') | length > 0 %}
 
-# system operation after installation
+# system operation after installation (halt, reboot, poweroff, shutdown)
 {{ kickstart_finish }}
 {% endif %}
 {% endif %}

@@ -1,4 +1,5 @@
 ---
+# code: language=ansible
 # role: ansible-role-kickstart
 # file: defaults/main.yml
 
@@ -19,13 +20,13 @@ kickstart_gen_mac_from_name: true
 kickstart_mac_count: 1
 
 # see ouput of: `ksvalidator -l` for supported versions => FC3-6, F7-39, RHEL3-9
-kickstart_version: F38
+kickstart_version: F39
 
 # architecture for repo urls, use values of ansible_architecture
 kickstart_arch: "x86_64"
 
 # the default mirror to use
-kickstart_mirror: https://mirror.mauer.in
+kickstart_mirror: https://mirror.mauer.in/fedora/linux
 
 # default rpmfusion mirror
 kickstart_mirror_rpmfusion: https://mirror.mauer.in/fedora/rpmfusion
@@ -41,8 +42,7 @@ kickstart_url: "url --url={{ kickstart_mirrors.fedora.everything.url }}"
 # additional repos
 kickstart_repos:
   - "repo --baseurl={{ kickstart_mirrors.fedora.everything_updates.url }} \
-    --name={{ kickstart_mirrors.fedora.everything_updates.name }} \
-    --install --cost=0"
+    --name={{ kickstart_mirrors.fedora.everything_updates.name }} --cost=0"
 
 # bootloader settings
 kickstart_bootloader: "bootloader --driveorder=vda --location=mbr \
@@ -69,7 +69,7 @@ kickstart_partitions:
   - "part /tmp                                --size=4096     --fstype=tmpfs \
     --fsoptions=\"noatime,nodev,noexec,nosuid,mode=1700\""
   - "part btrfs.0               --ondrive=vda --size=1 --grow --fstype=btrfs \
-    --fsoptions=\"autodefrag,compress=zstd,noatime,space_cache=v2\""
+    --fsoptions=\"compress=zstd,noatime,space_cache=v2\""
 
 # logical volumes
 kickstart_logvols: []
@@ -83,32 +83,32 @@ kickstart_btrfs_volumes:
 
 # btrfs subvolumes
 kickstart_btrfs_subvolumes:
-  - "btrfs /                    --subvol --name=@            LABEL=system"
-  - "btrfs /home                --subvol --name=@home        LABEL=system"
-  - "btrfs /opt                 --subvol --name=@opt         LABEL=system"
-  - "btrfs /srv                 --subvol --name=@srv         LABEL=system"
-  - "btrfs /var                 --subvol --name=@var         LABEL=system"
-  - "btrfs /var/lib             --subvol --name=@varlib      LABEL=system"
-  - "btrfs /var/lib/containers  --subvol --name=@containers  LABEL=system"
-  - "btrfs /var/lib/machines    --subvol --name=@machines    LABEL=system"
-  - "btrfs /var/lib/portables   --subvol --name=@portables   LABEL=system"
-  - "btrfs /var/log             --subvol --name=@log         LABEL=system"
-  - "btrfs /var/log/audit       --subvol --name=@audit       LABEL=system"
-  - "btrfs /var/spool/mail      --subvol --name=@mail        LABEL=system"
-  - "btrfs /var/tmp             --subvol --name=@tmp         LABEL=system"
-  - "btrfs /var/www             --subvol --name=@www         LABEL=system"
+  - "btrfs /                    --subvol --name=@            system"
+  - "btrfs /home                --subvol --name=@home        system"
+  - "btrfs /opt                 --subvol --name=@opt         system"
+  - "btrfs /srv                 --subvol --name=@srv         system"
+  - "btrfs /var                 --subvol --name=@var         system"
+  - "btrfs /var/lib             --subvol --name=@varlib      system"
+  - "btrfs /var/lib/containers  --subvol --name=@containers  system"
+  - "btrfs /var/lib/machines    --subvol --name=@machines    system"
+  - "btrfs /var/lib/portables   --subvol --name=@portables   system"
+  - "btrfs /var/log             --subvol --name=@log         system"
+  - "btrfs /var/log/audit       --subvol --name=@audit       system"
+  - "btrfs /var/spool/mail      --subvol --name=@mail        system"
+  - "btrfs /var/tmp             --subvol --name=@tmp         system"
+  - "btrfs /var/www             --subvol --name=@www         system"
 
 # firewall configration
 kickstart_firewall: "firewall --enabled --ssh"
 
 # service configuration
-kickstart_services: "services --enabled=auditd,ssh"
+kickstart_services: "services --enabled=auditd,sshd"
 
 # selinux status
 kickstart_selinux: "selinux --enforcing"
 
 # do not configure x window system
-kickstart_skipx: false
+kickstart_skipx: true
 
 # configure x window system
 kickstart_xconfig: ''
@@ -123,7 +123,7 @@ kickstart_groups: []
 kickstart_users: []
 
 # root password
-kickstart_rootpw: "rootpw Strunz3nOed=7d5+p --plaintext"
+kickstart_rootpw: "rootpw Strunz3nOed=7d5+p#+l --plaintext"
 
 # ssh keys
 kickstart_sshkeys: []
@@ -132,9 +132,9 @@ kickstart_sshkeys: []
 kickstart_sshpw: ''
 
 # configure system password policies
-kickstart_pwpolicies:
-  - "pwpolicy root --minlen=16 --minquality=80 --strict --notempty --nochanges"
-  - "pwpolicy user --minlen=16 --minquality=60 --strict --notempty --nochanges"
+kickstart_pwpolicies: []
+  # - "pwpolicy root --minlen=16 --minquality=80 --strict --notempty --nochanges"
+  # - "pwpolicy user --minlen=16 --minquality=60 --strict --notempty --nochanges"
 
 # network interfaces
 kickstart_networks:
@@ -173,8 +173,10 @@ kickstart_packages:
   - python3-dnf
   - python3-libselinux
   - python3-libsemanage
+  - python3-pip
   - python3-pwquality
   - qemu-guest-agent
+  - tree
   - zstd
   - -abrt*
   - -iw*
