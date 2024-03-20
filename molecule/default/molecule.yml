@@ -18,7 +18,7 @@ platforms:
   - name: fedora-kickstart
     image: "docker.io/jam82/molecule-fedora:latest"
     pre_build_image: true
-    command: nuill
+    command: null
     entrypoint: null
     systemd: true
 provisioner:
