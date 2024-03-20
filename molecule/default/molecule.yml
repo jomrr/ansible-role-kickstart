@@ -7,7 +7,6 @@ dependency:
   name: galaxy
   options:
     requirements-file: meta/requirements.yml
-    role-file: meta/requirements.yml
 driver:
   name: podman
 lint: |

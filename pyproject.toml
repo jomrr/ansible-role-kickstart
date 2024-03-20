@@ -1,11 +1,10 @@
 [project]
-name = "ansible-role-kickstart"
+name = "kickstart"
 version = "0.0.0"
 description = "Ansible role for generating kickstart files."
 authors = ["Jonas Mauer"]
 license = "MIT"
-keywords = ["kickstart"]
-
+keywords = ["kickstart", "unattended"]
 repository = "https://github.com/jam82/ansible-role-kickstart"
 
 [tool.commitizen]
