@@ -1,9 +1,0 @@
----
-# role: ansible-role-kickstart
-# file: molecule/tox/requirements.yml
-
-collections:
-  - community.docker
-  - community.general
-
-roles: []

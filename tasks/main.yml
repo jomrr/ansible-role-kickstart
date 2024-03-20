@@ -1,33 +1,19 @@
 ---
-# role: ansible-role-kickstart
+# code: language=ansible
+# role: jam82.kickstart
 # file: tasks/main.yml
 
-- name: "Install pykickstart on kickstart host"
-  ansible.builtin.include_tasks: install.yml
-  when: inventory_hostname == kickstart_host
+- name: "Install pykickstart"
+  become: true
+  ansible.builtin.dnf:
+    name: pykickstart
+    state: present
 
-- name: "Generate MAC address(es)"
+- name: "Create kickstart file"
   become: false
-  delegate_to: localhost
-  jam82.general.gen_mac_from_name:
-    name: "{{ inventory_hostname }}"
-    count: "{{ kickstart_mac_count }}"
-  register: _vm
-  when: kickstart_gen_mac_from_name | bool
-
-- name: "Debug MAC address(es)"
-  become: false
-  delegate_to: localhost
-  ansible.builtin.debug:
-    msg: "{{ _vm.macs }}"
-  when: kickstart_gen_mac_from_name | bool
-
-- name: "Create kickstart file {{ kickstart_hostpath }}"
-  become: false
-  delegate_to: "{{ kickstart_host }}"
   ansible.builtin.template:
     src: kickstart.cfg.j2
-    dest: "{{ kickstart_hostpath }}"
+    dest: "{{ item.dest }}"
     mode: '0660'
-    validate: ksvalidator --version={{ kickstart_version }} %s
-  when: kickstart_version is defined
+    validate: ksvalidator --version={{ item.version }} %s
+  loop: "{{ kickstart_files }}"

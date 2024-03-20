@@ -1,6 +1,0 @@
----
-# role: ansible-role-kickstart
-# file: vars/RedHat.yml
-
-_kickstart_packages:
-  - pykickstart

@@ -1,11 +1,13 @@
 ---
-# role: ansible-role-kickstart
+# code: language=ansible
+# role: jam82.kickstart
 # file: molecule/default/molecule.yml
 
 dependency:
   name: galaxy
   options:
-    requirements-file: requirements.yml
+    requirements-file: meta/requirements.yml
+    role-file: meta/requirements.yml
 driver:
   name: podman
 lint: |
@@ -15,48 +17,14 @@ lint: |
 platforms:
   - name: fedora-kickstart
     image: "docker.io/jam82/molecule-fedora:latest"
-    command: ""
     pre_build_image: true
-    tmpfs:
-      - /tmp
-      - /run
-#  - name: almalinux-kickstart
-#    image: "jam82/molecule-almalinux:latest"
-#    command: ""
-#    pre_build_image: true
-#    privileged: true
-#    tmpfs:
-#      - /tmp
-#      - /run
-#  - name: fedora-kickstart
-#    image: "jam82/molecule-fedora:latest"
-#    command: ""
-#    pre_build_image: true
-#    privileged: true
-#    tmpfs:
-#      - /tmp
-#      - /run
-#  - name: opensuse-latest
-#    image: "jam82/molecule-opensuse:latest"
-#    command: ""
-#    pre_build_image: true
-#    privileged: true
-#    tmpfs:
-#      - /tmp
-#      - /run
-#  - name: opensuse-tumbleweed
-#    image: "jam82/molecule-opensuse:tumbleweed"
-#    command: ""
-#    pre_build_image: true
-#    privileged: true
-#    tmpfs:
-#      - /tmp
-#      - /run
+    command: nuill
+    entrypoint: null
+    systemd: true
 provisioner:
   name: ansible
   log: true
   playbooks:
-    prepare: ../resources/playbooks/prepare.yml
     converge: ../resources/playbooks/converge.yml
     verify: ../resources/playbooks/verify.yml
 verifier:

@@ -1,6 +1,6 @@
 ---
 # code: language=ansible
-# role: ansible-role-kickstart
+# role: jam82.kickstart
 # file: meta/main.yml
 
 galaxy_info:
@@ -10,5 +10,6 @@ galaxy_info:
   company: ''
   issue_tracker_url: https://github.com/jam82/ansible-role-kickstart/issues
   license: MIT
-  min_ansible_version: "2.9"
-  galaxy_tags: []
+  min_ansible_version: "2.15"
+  galaxy_tags:
+    - kickstart

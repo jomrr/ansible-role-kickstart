@@ -1,10 +1,10 @@
 ---
-# role: ansible-role-kickstart
+# code: language=ansible
+# role: jam82.kickstart
 # file: molecule/resources/playbooks/verify.yml
 
-- name: Verify
+- name: "PLAYBOOK | Verify"
   hosts: all
-  become: true
   gather_facts: false
   tasks:
     - name: "Assertions"

@@ -1,0 +1,10 @@
+---
+# code: language=ansible
+# role: jam82.kickstart
+# file: meta/requirments.yml
+
+collections:
+  - name: git+https://github.com/jam82/ansible-collection-general.git
+    version: main
+
+roles: []

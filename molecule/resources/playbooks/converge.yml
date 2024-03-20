@@ -1,9 +1,9 @@
 ---
-# role: ansible-role-kickstart
+# code: language=ansible
+# role: jam82.kickstart
 # file: molecule/resources/playbooks/converge.yml
 
-- name: Converge
+- name: "PLAYBOOK | Converge"
   hosts: all
-  become: true
   roles:
     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
