@@ -4,11 +4,11 @@
 
 repos:
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v24.2.0
+    rev: v24.2.1
     hooks:
       - id: ansible-lint
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.15.0
+    rev: v3.20.0
     hooks:
       - id: commitizen
         stages:
