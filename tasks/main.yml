@@ -1,6 +1,6 @@
 ---
 # code: language=ansible
-# role: jam82.kickstart
+# role: jomrr.kickstart
 # file: tasks/main.yml
 
 - name: "Install pykickstart"

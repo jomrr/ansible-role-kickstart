@@ -1,6 +1,6 @@
 ---
 # code: language=ansible
-# role: jam82.kickstart
+# role: jomrr.kickstart
 # file: molecule/resources/playbooks/converge.yml
 
 - name: "PLAYBOOK | Converge"

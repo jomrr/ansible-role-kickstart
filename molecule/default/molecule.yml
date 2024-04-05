@@ -1,6 +1,6 @@
 ---
 # code: language=ansible
-# role: jam82.kickstart
+# role: jomrr.kickstart
 # file: molecule/default/molecule.yml
 
 dependency:
@@ -15,7 +15,7 @@ lint: |
   ansible-lint
 platforms:
   - name: fedora-kickstart
-    image: "docker.io/jam82/molecule-fedora:latest"
+    image: "docker.io/jomrr/molecule-fedora:latest"
     pre_build_image: true
     command: null
     entrypoint: null

@@ -1,6 +1,6 @@
 ---
 # code: language=ansible
-# role: jam82.kickstart
+# role: jomrr.kickstart
 # file: defaults/main.yml
 
 kickstart_files:
@@ -82,7 +82,7 @@ kickstart_files:
       # - "pwpolicy user --minlen=16 --minquality=60 --strict --notempty --nochanges"
     # network interfaces, use lookup-plugin for vm generation and here
     networks:
-      - "network --hostname=test.example.com --device={{ lookup('jam82.general.mac_address', 'test.example.com-0') }} --bindto=mac --bootproto=dhcp"
+      - "network --hostname=test.example.com --device={{ lookup('jomrr.general.mac_address', 'test.example.com-0') }} --bindto=mac --bootproto=dhcp"
     # join realm or ad domain
     realm: ''
     # keyboard and keymap settings

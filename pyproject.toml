@@ -5,7 +5,7 @@ description = "Ansible role for generating kickstart files."
 authors = ["Jonas Mauer"]
 license = "MIT"
 keywords = ["kickstart", "unattended"]
-repository = "https://github.com/jam82/ansible-role-kickstart"
+repository = "https://github.com/jomrr/ansible-role-kickstart"
 
 [tool.commitizen]
 name = "cz_conventional_commits"

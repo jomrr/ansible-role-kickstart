@@ -1,6 +1,6 @@
 # Ansible role kickstart
 
-![GitHub](https://img.shields.io/github/license/jam82/ansible-role-kickstart) ![GitHub last commit](https://img.shields.io/github/last-commit/jam82/ansible-role-kickstart) ![GitHub issues](https://img.shields.io/github/issues-raw/jam82/ansible-role-kickstart)
+![GitHub](https://img.shields.io/github/license/jomrr/ansible-role-kickstart) ![GitHub last commit](https://img.shields.io/github/last-commit/jomrr/ansible-role-kickstart) ![GitHub issues](https://img.shields.io/github/issues-raw/jomrr/ansible-role-kickstart)
 
 **Ansible role for generating kickstart files.**
 
@@ -29,7 +29,7 @@ This role has no dependencies.
 
 | OS Family | Distribution | Version | Container Image |
 |-----------|--------------|---------|-----------------|
-| RedHat | Fedora | latest | [jam82/molecule-fedora:latest]( https://hub.docker.com/r/jam82/molecule-fedora ) |
+| RedHat | Fedora | latest | [jomrr/molecule-fedora:latest]( https://hub.docker.com/r/jomrr/molecule-fedora ) |
 
 ## Role Variables
 
@@ -41,22 +41,22 @@ Example playbooks(s) that show how to use this role.
 
 ## Simple example playbook
 
-A simple default example playbook for using jam82.kickstart.
+A simple default example playbook for using jomrr.kickstart.
 ```yaml
 ---
-# name: "jam82.kickstart"
+# name: "jomrr.kickstart"
 # file: "playbook_kickstart.yml"
 
 - name: "PLAYBOOK | kickstart"
   hosts: "kickstart_hosts"
   gather_facts: true
   roles:
-    - role: "jam82.kickstart"
+    - role: "jomrr.kickstart"
 ```
 
 ## Author(s) and License
 
-- :octocat:                 Author::    [jam82](https://github.com/jam82)
+- :octocat:                 Author::    [jomrr](https://github.com/jomrr)
 - :triangular_flag_on_post: Copyright:: 2022, Jonas Mauer
 - :page_with_curl:          License::   [MIT](LICENSE)
 

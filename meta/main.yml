@@ -1,15 +1,15 @@
 ---
-# name: jam82.kickstart
+# name: jomrr.kickstart
 # file: meta/main.yml
 
 galaxy_info:
-  namespace: jam82
+  namespace: jomrr
   role_name: kickstart
   author: Jonas Mauer
   company: none
   description: Ansible role for generating kickstart files.
   license: MIT
-  issue_tracker_url: https://github.com/jam82/ansible-role-kickstart/issues
+  issue_tracker_url: https://github.com/jomrr/ansible-role-kickstart/issues
   min_ansible_version: "2.15"
   galaxy_tags:
     - kickstart
