@@ -22,9 +22,9 @@ kickstart_files:
     # initialize partition table
     zerombr: zerombr
     # partitions take precedence over autopart and autopart over reqpart
-    autopart: "--fstype=btrfs"
+    # autopart: "--fstype=btrfs"
     # partitions take precedence over autopart and autopart over reqpart
-    reqpart: "reqpart --add-boot"
+    # reqpart: "reqpart --add-boot"
     # partitions
     partitions:
       - "part /boot/efi --asprimary --ondrive=vda --size=512      --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
