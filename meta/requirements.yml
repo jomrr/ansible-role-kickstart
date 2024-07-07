@@ -1,7 +1,0 @@
----
-# name: jomrr.kickstart
-# file: meta/requirements.yml
-
-collections: []
-
-roles: []
