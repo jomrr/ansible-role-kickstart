@@ -1,5 +1,0 @@
----
-# name: jomrr.kickstart
-# file: meta/requirements.yml
-
-- name: community.general
