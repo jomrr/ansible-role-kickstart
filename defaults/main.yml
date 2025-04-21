@@ -3,144 +3,152 @@
 # role: jomrr.kickstart
 # file: defaults/main.yml
 
+kickstart_defaults:
+  # kickstart file will be generated at the following absolute path
+  dest: "/tmp/test.ks"
+  # see ouput of: `ksvalidator -l` for supported versions => FC3-X, F7-XX, RHEL3-X
+  version: F42
+  # the boot target
+  target: graphical
+  # install mirror
+  url: "url --url=https://ftp.fau.de/pub/fedora/linux/releases/42/Everything/x86_64/os/"
+  # additional repos
+  repos:
+    - "repo --baseurl=https://ftp.fau.de/pub/fedora/linux/updates/42/Everything/x86_64/ --name=fedora-updates --cost=0"
+  # bootloader settings
+  bootloader: "bootloader --driveorder=vda --location=mbr --password=S3cret!"
+  # delete partitions
+  clearpart: "clearpart --all --drives=vda"
+  # initialize partition table
+  zerombr: zerombr
+  # partitions take precedence over autopart and autopart over reqpart
+  # autopart: "--fstype=btrfs"
+  # partitions take precedence over autopart and autopart over reqpart
+  # reqpart: "reqpart --add-boot"
+  # partitions
+  partitions:
+    - "part /boot/efi --asprimary --ondrive=vda --size=512      --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
+    - "part btrfs.0               --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions=\"compress=zstd,noatime,space_cache=v2\""
+    - "part /tmp                                --size=4096     --fstype=tmpfs --fsoptions=\"noatime,nodev,noexec,nosuid,mode=1700\""
+    # - "part /boot/efi --asprimary --ondrive=vda --size=512      --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
+    # - "part /boot     --asprimary --ondrive=vda --size=1024     --fstype=ext4  --fsoptions=\"noatime\""
+    # - "part btrfs.0               --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions=\"compress=zstd,noatime,space_cache=v2\""
+  # logical volumes
+  logvols: []
+  # volume groups
+  volgroups: []
+  # btrfs volumes
+  btrfs_volumes:
+    - "btrfs /mnt/btrfs/system    --label=system               btrfs.0"
+  # btrfs subvolumes
+  btrfs_subvolumes:
+    - "btrfs /boot                --subvol --name=@boot        system"
+    - "btrfs /                    --subvol --name=@            system"
+    - "btrfs /home                --subvol --name=@home        system"
+    - "btrfs /opt                 --subvol --name=@opt         system"
+    - "btrfs /srv                 --subvol --name=@srv         system"
+    - "btrfs /var                 --subvol --name=@var         system"
+    - "btrfs /var/lib             --subvol --name=@varlib      system"
+    - "btrfs /var/lib/containers  --subvol --name=@containers  system"
+    - "btrfs /var/lib/machines    --subvol --name=@machines    system"
+    - "btrfs /var/lib/portables   --subvol --name=@portables   system"
+    - "btrfs /var/log             --subvol --name=@log         system"
+    - "btrfs /var/log/audit       --subvol --name=@audit       system"
+    - "btrfs /var/spool/mail      --subvol --name=@mail        system"
+    - "btrfs /var/tmp             --subvol --name=@tmp         system"
+    - "btrfs /var/www             --subvol --name=@www         system"
+  # firewall configration
+  firewall: "firewall --enabled --ssh"
+  # service configuration
+  services: "services --enabled=auditd,sshd"
+  # selinux status
+  selinux: "selinux --enforcing"
+  # do not configure x window system
+  skipx: true
+  # configure x window system
+  xconfig: ''
+  # configure authentication
+  authselect: ''
+  # create user groups
+  groups: []
+  # create users
+  users: []
+  # root password
+  rootpw: "rootpw Strunz3nOed=7d5+p#+l --plaintext"
+  # ssh keys
+  sshkeys: []
+  # restrict ssh access during installation
+  sshpw: ''
+  # configure system password policies
+  pwpolicies: []
+    # - "pwpolicy root --minlen=16 --minquality=80 --strict --notempty --nochanges"
+    # - "pwpolicy user --minlen=16 --minquality=60 --strict --notempty --nochanges"
+  # network interfaces, use lookup-plugin for vm generation and here
+  networks:
+    - "network --hostname=test.example.com --device={{ lookup('jomrr.general.mac_address', 'test.example.com-0') }} --bindto=mac --bootproto=dhcp"
+  # join realm or ad domain
+  realm: ''
+  # keyboard and keymap settings
+  keyboard: "keyboard --vckeymap=de --xlayouts=de"
+  # language settings
+  language: "lang en_US.UTF-8 --addsupport=de_DE.UTF-8"
+  # timezone and ntp configuration, depending on kickstart version
+  timezone: "timezone Europe/Berlin --utc"
+  # timesource: ntp server, pool or disable
+  timesource: 'timesource --ntp-pool de.pool.ntp.org'
+  # vnc remote access
+  vnc: ''
+  # packages to install and remove from installation.
+  packages:
+    - "@^minimal-environment"
+    - bash
+    - bash-completion
+    - dnf-automatic
+    - dnf-plugins-core
+    - firewalld
+    - libpwquality
+    - neovim
+    - python3
+    - python3-dnf
+    - python3-libselinux
+    - python3-libsemanage
+    - python3-pip
+    - python3-pwquality
+    - qemu-guest-agent
+    - tree
+    - zstd
+    - -abrt*
+    - -iw*
+    - -libsss_*
+    - -nano
+    - -setroubleshoot*
+    - -sssd*
+    - -vi
+    - -vim
+    - -vim-minimal
+    - -zram-generator*
+  # system operation after installation, can be halt, reboot, poweroff, shutdown
+  finish: 'reboot --eject'
+  # If you define template, only this will be used
+  # template:
+
 kickstart_files:
-  - # ks file will be created at this absolute path
-    dest: "/tmp/test.ks"
-    # see ouput of: `ksvalidator -l` for supported versions => FC3-X, F7-XX, RHEL3-X
-    version: F39
-    # the boot target
-    target: graphical
-    # install mirror
-    url: "url --url=https://mirror.mauer.in/fedora/linux/releases/39/Everything/x86_64/os/"
-    # additional repos
-    repos:
-      - "repo --baseurl=https://mirror.mauer.in/fedora/linux/updates/39/Everything/x86_64/ --name=fedora-updates --cost=0"
-    # bootloader settings
-    bootloader: "bootloader --driveorder=vda --location=mbr --password=S3cret!"
-    # delete partitions
-    clearpart: "clearpart --all --drives=vda"
-    # initialize partition table
-    zerombr: zerombr
-    # partitions take precedence over autopart and autopart over reqpart
-    # autopart: "--fstype=btrfs"
-    # partitions take precedence over autopart and autopart over reqpart
-    # reqpart: "reqpart --add-boot"
-    # partitions
-    partitions:
-      - "part /boot/efi --asprimary --ondrive=vda --size=512      --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
-      - "part /boot     --asprimary --ondrive=vda --size=1024     --fstype=ext4  --fsoptions=\"noatime\""
-      - "part /tmp                                --size=4096     --fstype=tmpfs --fsoptions=\"noatime,nodev,noexec,nosuid,mode=1700\""
-      - "part btrfs.0               --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions=\"compress=zstd,noatime,space_cache=v2\""
-    # logical volumes
-    logvols: []
-    # volume groups
-    volgroups: []
-    # btrfs volumes
-    btrfs_volumes:
-      - "btrfs /mnt/btrfs/system    --label=system               btrfs.0"
-    # btrfs subvolumes
-    btrfs_subvolumes:
-      - "btrfs /                    --subvol --name=@            system"
-      - "btrfs /home                --subvol --name=@home        system"
-      - "btrfs /opt                 --subvol --name=@opt         system"
-      - "btrfs /srv                 --subvol --name=@srv         system"
-      - "btrfs /var                 --subvol --name=@var         system"
-      - "btrfs /var/lib             --subvol --name=@varlib      system"
-      - "btrfs /var/lib/containers  --subvol --name=@containers  system"
-      - "btrfs /var/lib/machines    --subvol --name=@machines    system"
-      - "btrfs /var/lib/portables   --subvol --name=@portables   system"
-      - "btrfs /var/log             --subvol --name=@log         system"
-      - "btrfs /var/log/audit       --subvol --name=@audit       system"
-      - "btrfs /var/spool/mail      --subvol --name=@mail        system"
-      - "btrfs /var/tmp             --subvol --name=@tmp         system"
-      - "btrfs /var/www             --subvol --name=@www         system"
-    # firewall configration
-    firewall: "firewall --enabled --ssh"
-    # service configuration
-    services: "services --enabled=auditd,sshd"
-    # selinux status
-    selinux: "selinux --enforcing"
-    # do not configure x window system
-    skipx: true
-    # configure x window system
-    xconfig: ''
-    # configure authentication
-    authselect: ''
-    # create user groups
-    groups: []
-    # create users
-    users: []
-    # root password
-    rootpw: "rootpw Strunz3nOed=7d5+p#+l --plaintext"
-    # ssh keys
-    sshkeys: []
-    # restrict ssh access during installation
-    sshpw: ''
-    # configure system password policies
-    pwpolicies: []
-      # - "pwpolicy root --minlen=16 --minquality=80 --strict --notempty --nochanges"
-      # - "pwpolicy user --minlen=16 --minquality=60 --strict --notempty --nochanges"
-    # network interfaces, use lookup-plugin for vm generation and here
-    networks:
-      - "network --hostname=test.example.com --device={{ lookup('jomrr.general.mac_address', 'test.example.com-0') }} --bindto=mac --bootproto=dhcp"
-    # join realm or ad domain
-    realm: ''
-    # keyboard and keymap settings
-    keyboard: "keyboard --vckeymap=de --xlayouts=de"
-    # language settings
-    language: "lang en_US.UTF-8 --addsupport=de_DE.UTF-8"
-    # timezone and ntp configuration, depending on kickstart version
-    timezone: "timezone Europe/Berlin --utc"
-    # timesource: ntp server, pool or disable
-    timesource: 'timesource --ntp-pool de.pool.ntp.org'
-    # vnc remote access
-    vnc: ''
-    # packages to install and remove from installation.
-    packages:
-      - "@^minimal-environment"
-      - bash
-      - bash-completion
-      - dnf-automatic
-      - dnf-plugins-core
-      - firewalld
-      - libpwquality
-      - neovim
-      - python3
-      - python3-dnf
-      - python3-libselinux
-      - python3-libsemanage
-      - python3-pip
-      - python3-pwquality
-      - qemu-guest-agent
-      - tree
-      - zstd
-      - -abrt*
-      - -iw*
-      - -libsss_*
-      - -nano
-      - -setroubleshoot*
-      - -sssd*
-      - -vi
-      - -vim
-      - -vim-minimal
-      - -zram-generator*
+  - dest: "/tmp/test0.ks"
+  - dest: "/tmp/test1.ks"
+
     # post-install actions
-    post: |-
-      cat << EOF >> /etc/modprobe.d/hardening.conf
-      install cramfs /bin/true
-      install freevxfs /bin/true
-      install jffs2 /bin/true
-      install hfs /bin/true
-      install hfsplus /bin/true
-      install squashfs /bin/true
-      install udf /bin/true
-      install dccp /bin/true
-      install sctp /bin/true
-      install rds /bin/true
-      install tipc /bin/true
-      install usb_storage /bin/true
-      EOF
-    # system operation after installation, can be halt, reboot, poweroff, shutdown
-    finish: 'reboot --eject'
-    # If you define template, only this will be used
-    # template:
+    # post: |-
+    #   cat << EOF >> /etc/modprobe.d/hardening.conf
+    #   install cramfs /bin/true
+    #   install freevxfs /bin/true
+    #   install jffs2 /bin/true
+    #   install hfs /bin/true
+    #   install hfsplus /bin/true
+    #   install squashfs /bin/true
+    #   install udf /bin/true
+    #   install dccp /bin/true
+    #   install sctp /bin/true
+    #   install rds /bin/true
+    #   install tipc /bin/true
+    #   install usb_storage /bin/true
+    #   EOF

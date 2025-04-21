@@ -1,204 +1,204 @@
-# {{ item.version }}
+# {{ ks.version }}
 # role: jomrr.kickstart
 # file: {{ template_destpath }}
 
-{% if item.template | default('') | length > 0 %}
-{{ item.template }}
+{% if ks.template | default('') | length > 0 %}
+{{ ks.template }}
 {% else %}
 eula        --agreed
 
 # initial setup
 firstboot   --disable
-{% if item.target | default('') | length > 0 %}
+{% if ks.target | default('') | length > 0 %}
 
 # installation environment
-{{ item.target }}
+{{ ks.target }}
 {% endif %}
-{% if item.bootloader | default('') | length > 0 %}
+{% if ks.bootloader | default('') | length > 0 %}
 
 # bootloader configuration
-{{ item.bootloader }}
+{{ ks.bootloader }}
 {% endif %}
-{% if item.clearpart | default('') | length > 0 %}
+{% if ks.clearpart | default('') | length > 0 %}
 
 # clearpart
-{{ item.clearpart }}
+{{ ks.clearpart }}
 {% endif %}
-{% if item.zerombr | default('') | length > 0 %}
+{% if ks.zerombr | default('') | length > 0 %}
 
 # zerombr
-{{ item.zerombr }}
+{{ ks.zerombr }}
 {% endif %}
-{% if item.url | default('') | length > 0 %}
+{% if ks.url | default('') | length > 0 %}
 
 # installation mirror
-{{ item.url }}
+{{ ks.url }}
 {% endif %}
-{% if item.repos | default([]) | length > 0 %}
+{% if ks.repos | default([]) | length > 0 %}
 
 # repository configuration
-{%  for repo in item.repos %}
+{%  for repo in ks.repos %}
 {{ repo }}
 {%  endfor %}
 {% endif %}
-{% if item.partitions | default([]) | length > 0 %}
+{% if ks.partitions | default([]) | length > 0 %}
 
 # partitions
-{%  for part in item.partitions %}
+{%  for part in ks.partitions %}
 {{ part }}
 {%  endfor %}
-{%  if item.btrfs_volumes | default([]) | length > 0 %}
+{%  if ks.btrfs_volumes | default([]) | length > 0 %}
 
 # btrfs volumes
-{%      for btrfs_volume in item.btrfs_volumes %}
+{%      for btrfs_volume in ks.btrfs_volumes %}
 {{ btrfs_volume }}
 {%      endfor %}
 {%  endif %}
-{%  if item.btrfs_subvolumes | default([]) | length > 0 %}
+{%  if ks.btrfs_subvolumes | default([]) | length > 0 %}
 
 # btrfs subvolumes
-{%      for btrfs_subvolume in item.btrfs_subvolumes %}
+{%      for btrfs_subvolume in ks.btrfs_subvolumes %}
 {{ btrfs_subvolume }}
 {%      endfor %}
 {%  endif %}
-{%  if item.volgroups | default([]) | length > 0 %}
+{%  if ks.volgroups | default([]) | length > 0 %}
 
 # volume groups
-{%      for vg in item.volgroups %}
+{%      for vg in ks.volgroups %}
 {{ vg }}
 {%      endfor %}
 {%  endif %}
-{%  if item.logvols | default([]) | length > 0 %}
+{%  if ks.logvols | default([]) | length > 0 %}
 
 # logical volumes
-{%      for lv in item.logvols %}
+{%      for lv in ks.logvols %}
 {{ lv }}
 {%      endfor %}
 {%  endif %}
-{% elif item.autopart | default([]) | length > 0 %}
+{% elif ks.autopart | default([]) | length > 0 %}
 
 # automatic partioning
-{{ item.autopart }}
-{% elif item.reqpart | default([]) | length > 0 %}
+{{ ks.autopart }}
+{% elif ks.reqpart | default([]) | length > 0 %}
 
 # required partitions
-{{ item.reqpart }}
+{{ ks.reqpart }}
 {% endif %}
-{% if item.networks | default([]) | length > 0 %}
+{% if ks.networks | default([]) | length > 0 %}
 
 # network configuration
-{%  for network in item.networks %}
+{%  for network in ks.networks %}
 {{ network }}
 {%  endfor %}
 {% endif %}
-{% if item.firewall | default('') | length > 0 %}
+{% if ks.firewall | default('') | length > 0 %}
 
 # firewall
-{{ item.firewall }}
+{{ ks.firewall }}
 {% endif %}
-{% if item.services | default('') | length > 0 %}
+{% if ks.services | default('') | length > 0 %}
 
 # services
-{{ item.services }}
+{{ ks.services }}
 {% endif %}
-{% if item.timezone | default('') | length > 0 %}
+{% if ks.timezone | default('') | length > 0 %}
 
 # timezone
-{{ item.timezone }}
+{{ ks.timezone }}
 {% endif %}
-{% if item.timesource | default('') | length > 0 %}
+{% if ks.timesource | default('') | length > 0 %}
 
 # timesource: ntp server, pool or disable
-{{ item.timesource }}
+{{ ks.timesource }}
 {% endif %}
-{% if item.keyboard | default('') | length > 0 %}
+{% if ks.keyboard | default('') | length > 0 %}
 
 # keyboard
-{{ item.keyboard }}
+{{ ks.keyboard }}
 {% endif %}
-{% if item.language | default('') | length > 0 %}
+{% if ks.language | default('') | length > 0 %}
 
 # language
-{{ item.language }}
+{{ ks.language }}
 {% endif %}
-{% if item.selinux | default('') | length > 0 %}
+{% if ks.selinux | default('') | length > 0 %}
 
 # selinux
-{{ item.selinux }}
+{{ ks.selinux }}
 {% endif %}
-{% if item.skipx | default(true) | bool %}
+{% if ks.skipx | default(true) | bool %}
 
 # do not configure x window system
 skipx
 {% endif %}
-{% if item.xconfig | default('') | length > 0 %}
+{% if ks.xconfig | default('') | length > 0 %}
 
 # configure x window system
-{{ item.xconfig }}
+{{ ks.xconfig }}
 {% endif %}
-{% if item.authselect | default('') | length > 0 %}
+{% if ks.authselect | default('') | length > 0 %}
 
 # configure authentication
-{{ item.authselect }}
+{{ ks.authselect }}
 {% endif %}
-{% if item.groups | default([]) | length > 0 %}
+{% if ks.groups | default([]) | length > 0 %}
 
 # create user groups
-{%  for group in item.groups %}
+{%  for group in ks.groups %}
 {{ group }}
 {%  endfor %}
 {% endif %}
-{% if item.users | default([]) | length > 0 %}
+{% if ks.users | default([]) | length > 0 %}
 
 # create users
-{%  for user in item.users %}
+{%  for user in ks.users %}
 {{ user }}
 {%  endfor %}
 {% endif %}
-{% if item.rootpw | default('') | length > 0 %}
+{% if ks.rootpw | default('') | length > 0 %}
 
 # root password
-{{ item.rootpw }}
+{{ ks.rootpw }}
 {% endif %}
-{% if item.sshkeys | default([]) | length > 0 %}
+{% if ks.sshkeys | default([]) | length > 0 %}
 
 # add ssh key(s) to authorized_keys
-{%  for sshkey in item.sshkeys %}
+{%  for sshkey in ks.sshkeys %}
 {{ sshkey }}
 {%  endfor %}
 {% endif %}
-{% if item.sshpw | default('') | length > 0 %}
+{% if ks.sshpw | default('') | length > 0 %}
 
 # restrict ssh access during installation
-{{ item.sshpw }}
+{{ ks.sshpw }}
 {% endif %}
-{% if item.realm | default('') | length > 0 %}
+{% if ks.realm | default('') | length > 0 %}
 
 # join realm or ad domain
-{{ item.realm }}
+{{ ks.realm }}
 {% endif %}
-{% if item.vnc | default('') | length > 0 %}
+{% if ks.vnc | default('') | length > 0 %}
 
 # vnc remote access
-{{ item.vnc }}
+{{ ks.vnc }}
 {% endif %}
-{% if item.packages | default([]) | length > 0 %}
+{% if ks.packages | default([]) | length > 0 %}
 
 # packages to install and remove
 %packages   --ignoremissing
-{{ item.packages | join("\n") }}
+{{ ks.packages | join("\n") }}
 %end
 {% endif %}
-{% if item.pwpolicies | default([]) | length > 0 %}
+{% if ks.pwpolicies | default([]) | length > 0 %}
 
 # password policies
 %anaconda
-{%  for pwpolicy in item.pwpolicies %}
+{%  for pwpolicy in ks.pwpolicies %}
 {{ pwpolicy }}
 {%  endfor %}
 %end
 {% endif %}
-{% if item.post | default('') | length > 0 %}
+{% if ks.post | default('') | length > 0 %}
 
 # disable kernel dumps
 %addon com_redhat_kdump --disable
@@ -206,12 +206,12 @@ skipx
 
 # post-install actions
 %post --log=/root/postinstall.log
-{{ item.post }}
+{{ ks.post }}
 %end
 {% endif %}
-{% if item.finish | default('reboot --eject') | length > 0 %}
+{% if ks.finish | default('reboot --eject') | length > 0 %}
 
 # system operation after installation (halt, reboot, poweroff, shutdown)
-{{ item.finish }}
+{{ ks.finish }}
 {% endif %}
 {% endif %}

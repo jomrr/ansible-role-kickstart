@@ -13,7 +13,9 @@
   become: false
   ansible.builtin.template:
     src: kickstart.cfg.j2
-    dest: "{{ item.dest }}"
+    dest: "{{ ks.dest }}"
     mode: '0660'
-    validate: ksvalidator --version={{ item.version }} %s
+    validate: ksvalidator --version={{ ks.version }} %s
+  vars:
+    ks: "{{ kickstart_defaults | combine(item, recursive=True) }}"
   loop: "{{ kickstart_files }}"
