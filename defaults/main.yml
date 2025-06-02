@@ -16,7 +16,7 @@ kickstart_defaults:
   repos:
     - "repo --baseurl=https://ftp.fau.de/pub/fedora/linux/updates/42/Everything/x86_64/ --name=fedora-updates --cost=0"
   # bootloader settings
-  bootloader: "bootloader --driveorder=vda --location=mbr --password=S3cret!"
+  bootloader: "bootloader --driveorder=vda --location=mbr"
   # delete partitions
   clearpart: "clearpart --all --drives=vda"
   # initialize partition table
@@ -28,8 +28,9 @@ kickstart_defaults:
   # partitions
   partitions:
     - "part /boot/efi --asprimary --ondrive=vda --size=512      --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
+    - "part /proc                                               --fstype=proc  --fsoptions=\"defaults,hidepid=2\""
+    - "part /tmp                                --size=4096     --fstype=tmpfs --fsoptions=\"noatime,nodev,nosuid,mode=1700\""
     - "part btrfs.0               --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions=\"compress=zstd,noatime,space_cache=v2\""
-    - "part /tmp                                --size=4096     --fstype=tmpfs --fsoptions=\"noatime,nodev,noexec,nosuid,mode=1700\""
     # - "part /boot/efi --asprimary --ondrive=vda --size=512      --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
     # - "part /boot     --asprimary --ondrive=vda --size=1024     --fstype=ext4  --fsoptions=\"noatime\""
     # - "part btrfs.0               --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions=\"compress=zstd,noatime,space_cache=v2\""
@@ -133,8 +134,7 @@ kickstart_defaults:
   # template:
 
 kickstart_files:
-  - dest: "/tmp/test0.ks"
-  - dest: "/tmp/test1.ks"
+  - dest: "/tmp/test.ks"
 
     # post-install actions
     # post: |-
