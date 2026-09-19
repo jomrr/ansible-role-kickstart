@@ -13,7 +13,7 @@ kickstart_defaults:
   # repos:
   #   - "repo --name=fedora-updates --baseurl=https://ftp.fau.de/fedora/linux/updates/44/Everything/x86_64/ --cost=0"
   # installation mode: graphical, text or cmdline
-  target: graphical
+  target: text
   # bootloader settings; the role adds --append with the kernel arguments, so
   # an --append given here is overridden
   bootloader: "bootloader --driveorder=vda --location=mbr"
@@ -23,8 +23,8 @@ kickstart_defaults:
   hardware: vm
   # additional kernel arguments, appended after those of the hardware profile
   kernel_cmdline: []
-  # delete partitions
-  clearpart: "clearpart --all --drives=vda"
+  # delete partitions and initialize the disk label
+  clearpart: "clearpart --all --initlabel --drives=vda"
   # partitions take precedence over autopart and autopart over reqpart
   # autopart: "autopart --type=btrfs"
   # reqpart: "reqpart --add-boot"

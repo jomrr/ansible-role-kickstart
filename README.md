@@ -56,11 +56,11 @@ Default:
 
 ```yaml
 kickstart_defaults:
-  target: graphical
+  target: text
   bootloader: bootloader --driveorder=vda --location=mbr
   hardware: vm
   kernel_cmdline: []
-  clearpart: clearpart --all --drives=vda
+  clearpart: clearpart --all --initlabel --drives=vda
   partitions:
     - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
     - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"

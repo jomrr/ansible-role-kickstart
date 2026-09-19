@@ -15,11 +15,11 @@ argument_specs:
             key omits its section. The keys version, url and repos default to the values
             of the selected distribution and major version in vars/.
         default:
-          target: graphical
+          target: text
           bootloader: bootloader --driveorder=vda --location=mbr
           hardware: vm
           kernel_cmdline: []
-          clearpart: clearpart --all --drives=vda
+          clearpart: clearpart --all --initlabel --drives=vda
           partitions:
             - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
             - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
