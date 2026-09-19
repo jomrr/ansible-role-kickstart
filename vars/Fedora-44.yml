@@ -21,7 +21,6 @@ __kickstart_packages:
     - -rpmfusion-*
   vm:
     - -chrony
-  metal:
-    - python3-dnf
+  metal: []
   intel: []
   amd: []
