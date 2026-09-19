@@ -1,0 +1,141 @@
+---
+# role: kickstart
+# file: .github/workflows/main.yml
+
+name: main full gate
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - .gitignore
+      - .pre-commit-config.yaml
+      - LICENSE
+      - README.md
+      - docs/**
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - .gitignore
+      - .pre-commit-config.yaml
+      - LICENSE
+      - README.md
+      - docs/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Sync Python environment
+        run: uv sync --only-group ansible --only-group podman
+
+      - name: Cache Ansible Collections
+        if: hashFiles('collections.yml') != ''
+        uses: actions/cache@v6
+        with:
+          path: ~/.ansible/collections
+          key: collections-${{ hashFiles('collections.yml') }}
+
+      - name: Install required Ansible Collections
+        run: |
+          set -euo pipefail
+          if [ -f collections.yml ]; then
+            uv run ansible-galaxy collection install -r collections.yml
+          fi
+
+      - name: Run ansible-lint
+        run: uv run ansible-lint --force-color --offline --profile production .
+
+  molecule-full:
+    needs: lint
+    env:
+      TERM: xterm-256color
+      FORCE_COLOR: "1"
+      CLICOLOR_FORCE: "1"
+      PY_COLORS: "1"
+      ANSIBLE_FORCE_COLOR: "true"
+    name: Molecule full ${{ matrix.name }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 45
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: kickstart-almalinux-10
+            uns: jomrr
+            img: almalinux
+            tag: 10
+          - name: kickstart-fedora-latest
+            uns: jomrr
+            img: fedora
+            tag: latest
+
+    steps:
+      - name: Disable AppArmor profile(s) for Molecule
+        run: sudo apparmor_parser -R /etc/apparmor.d/unix-chkpwd
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+          save-cache: false
+
+      - name: Sync Python environment
+        run: uv sync --only-group ansible --only-group podman
+
+      - name: Restore Ansible Collections
+        if: hashFiles('collections.yml') != ''
+        uses: actions/cache@v6
+        with:
+          path: ~/.ansible/collections
+          key: collections-${{ hashFiles('collections.yml') }}
+
+      - name: Install required Ansible Collections
+        run: |
+          set -euo pipefail
+          if [ -f collections.yml ]; then
+            uv run ansible-galaxy collection install -r collections.yml
+          fi
+
+      - name: Show Podman environment
+        run: |
+          set -euo pipefail
+          podman --version
+          podman info
+
+      - name: Run Molecule default scenario
+        run: |
+          set -euo pipefail
+          export uns="${{ matrix.uns }}"
+          export img="${{ matrix.img }}"
+          export tag="${{ matrix.tag }}"
+          uv run molecule test -s "default"

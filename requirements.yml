@@ -1,9 +1,0 @@
----
-# role: jomrr.kickstart
-# file: meta/requirements.yml
-
-collections:
-  - name: community.general
-#  - name: jomrr.general
-
-roles: []

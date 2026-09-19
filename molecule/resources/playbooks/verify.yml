@@ -1,12 +1,21 @@
 ---
-# code: language=ansible
-# role: jomrr.kickstart
+# role: kickstart
 # file: molecule/resources/playbooks/verify.yml
 
-- name: "PLAYBOOK | Verify"
+- name: KICKSTART | Verify the generated kickstart file
   hosts: all
   gather_facts: false
   tasks:
-    - name: "Assertions"
+    - name: KICKSTART | Read the generated kickstart file
+      ansible.builtin.slurp:
+        src: "{{ kickstart_files[0].dest }}"
+      register: __kickstart_rendered
+
+    - name: KICKSTART | Assert that every layer reached the kickstart file
       ansible.builtin.assert:
-        that: true
+        that: __kickstart_expected in (__kickstart_rendered.content | b64decode)
+        quiet: true
+      loop: "{{ __kickstart_test_expected }}"
+      loop_control:
+        loop_var: __kickstart_expected
+        label: "{{ __kickstart_expected }}"

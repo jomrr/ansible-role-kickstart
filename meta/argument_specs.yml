@@ -1,0 +1,381 @@
+---
+# role: kickstart
+# file: meta/argument_specs.yml
+
+argument_specs:
+  main:
+    short_description: Generate validated kickstart files for AlmaLinux and Fedora.
+    options:
+      kickstart_defaults:
+        type: dict
+        description:
+          - Values shared by all kickstart files; every key can be overridden per entry
+            in kickstart_files.
+          - Each value is a raw kickstart command line or a list of them. An empty or missing
+            key omits its section. The keys version, url and repos default to the values
+            of the selected distribution and major version in vars/.
+        default:
+          target: graphical
+          bootloader: bootloader --driveorder=vda --location=mbr
+          hardware: vm
+          kernel_cmdline: []
+          clearpart: clearpart --all --drives=vda
+          partitions:
+            - part /boot/efi --ondrive=vda --size=512      --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
+            - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
+            - part btrfs.0   --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions="compress=zstd:3,noatime"
+          logvols: []
+          volgroups: []
+          btrfs_volumes:
+            - btrfs none                 --label=system               btrfs.0
+          btrfs_subvolumes:
+            - btrfs /boot                --subvol --name=@boot        system
+            - btrfs /                    --subvol --name=@            system
+            - btrfs /home                --subvol --name=@home        system
+            - btrfs /opt                 --subvol --name=@opt         system
+            - btrfs /srv                 --subvol --name=@srv         system
+            - btrfs /var                 --subvol --name=@var         system
+            - btrfs /var/lib             --subvol --name=@varlib      system
+            - btrfs /var/lib/containers  --subvol --name=@containers  system
+            - btrfs /var/lib/machines    --subvol --name=@machines    system
+            - btrfs /var/lib/portables   --subvol --name=@portables   system
+            - btrfs /var/log             --subvol --name=@log         system
+            - btrfs /var/log/audit       --subvol --name=@audit       system
+            - btrfs /var/spool/mail      --subvol --name=@mail        system
+            - btrfs /var/tmp             --subvol --name=@tmp         system
+            - btrfs /var/www             --subvol --name=@www         system
+          networks:
+            - network --bootproto=dhcp
+          firewall: firewall --enabled --ssh
+          services: services --enabled=auditd,sshd
+          selinux: selinux --enforcing
+          skipx: true
+          xconfig: ''
+          authselect: ''
+          groups: []
+          users: []
+          rootpw: rootpw --lock
+          sshkeys:
+            - sshkey --username=root "{{ lookup('ansible.builtin.url', 'https://github.com/jomrr.keys',
+              wantlist=true) | first }}"
+          sshpw: ''
+          pwpolicies: []
+          realm: ''
+          keyboard: keyboard --vckeymap=de --xlayouts=de
+          language: lang en_US.UTF-8 --addsupport=de_DE.UTF-8
+          timezone: timezone Europe/Berlin --utc
+          timesource: timesource --ntp-pool de.pool.ntp.org
+          vnc: ''
+          packages: []
+          finish: reboot --eject
+        options:
+          version:
+            type: str
+            description: Kickstart syntax version passed to ksvalidator, for example F44
+              or RHEL10.
+          url:
+            type: str
+            description: The url command naming the installation source.
+          repos:
+            type: list
+            elements: str
+            description: Additional repo commands.
+          target:
+            type: str
+            description: Installation mode command, one of graphical, text or cmdline.
+          bootloader:
+            type: str
+            description: The bootloader command. The role adds --append with the kernel
+              arguments, so an --append given here is overridden.
+          hardware:
+            type: str
+            choices:
+              - amd
+              - intel
+              - vm
+            description: Hardware profile selecting the kernel arguments. vm renders the
+              base hardening arguments; amd and intel add the bare-metal and the vendor
+              IOMMU arguments.
+          kernel_cmdline:
+            type: list
+            elements: str
+            description: Additional kernel arguments, appended after those of the hardware
+              profile.
+          clearpart:
+            type: str
+            description: The clearpart command.
+          autopart:
+            type: str
+            description: The autopart command; used only when partitions is empty.
+          reqpart:
+            type: str
+            description: The reqpart command; used only when partitions and autopart are
+              empty.
+          partitions:
+            type: list
+            elements: str
+            description: The part commands. The Btrfs, volume group and logical volume lists
+              are rendered only with partitions.
+          btrfs_volumes:
+            type: list
+            elements: str
+            description: The btrfs commands that create volumes.
+          btrfs_subvolumes:
+            type: list
+            elements: str
+            description: The btrfs commands that create subvolumes.
+          volgroups:
+            type: list
+            elements: str
+            description: The volgroup commands.
+          logvols:
+            type: list
+            elements: str
+            description: The logvol commands.
+          networks:
+            type: list
+            elements: str
+            description: The network commands.
+          firewall:
+            type: str
+            description: The firewall command.
+          services:
+            type: str
+            description: The services command.
+          selinux:
+            type: str
+            description: The selinux command.
+          skipx:
+            type: bool
+            description: Render the skipx command.
+          xconfig:
+            type: str
+            description: The xconfig command.
+          authselect:
+            type: str
+            description: The authselect command.
+          groups:
+            type: list
+            elements: str
+            description: The group commands.
+          users:
+            type: list
+            elements: str
+            description: The user commands.
+          rootpw:
+            type: str
+            description: The rootpw command. The default locks the root password.
+          sshkeys:
+            type: list
+            elements: str
+            description: The sshkey commands; ksvalidator accepts one per user. The default
+              authorizes the first key published at github.com/jomrr.keys for root.
+          sshpw:
+            type: str
+            description: The sshpw command for SSH access during installation.
+          pwpolicies:
+            type: list
+            elements: str
+            description: The pwpolicy commands rendered into an anaconda section.
+          realm:
+            type: str
+            description: The realm command.
+          keyboard:
+            type: str
+            description: The keyboard command.
+          language:
+            type: str
+            description: The lang command.
+          timezone:
+            type: str
+            description: The timezone command.
+          timesource:
+            type: str
+            description: The timesource command.
+          vnc:
+            type: str
+            description: The vnc command.
+          packages:
+            type: list
+            elements: str
+            description: Packages added to the common and distribution package lists; prefix
+              a name with - to exclude it.
+          post:
+            type: str
+            description: Shell script rendered into a post section.
+          finish:
+            type: str
+            description: The command run after installation, one of halt, reboot, poweroff
+              or shutdown.
+          template:
+            type: str
+            description: Complete kickstart content; when set, it replaces everything the
+              role would render.
+      kickstart_files:
+        type: list
+        elements: dict
+        default: []
+        description:
+          - Kickstart files to create. Each entry is merged over kickstart_defaults and
+            accepts the same keys.
+        options:
+          version:
+            type: str
+            description: Kickstart syntax version passed to ksvalidator, for example F44
+              or RHEL10.
+          url:
+            type: str
+            description: The url command naming the installation source.
+          repos:
+            type: list
+            elements: str
+            description: Additional repo commands.
+          target:
+            type: str
+            description: Installation mode command, one of graphical, text or cmdline.
+          bootloader:
+            type: str
+            description: The bootloader command. The role adds --append with the kernel
+              arguments, so an --append given here is overridden.
+          hardware:
+            type: str
+            choices:
+              - amd
+              - intel
+              - vm
+            description: Hardware profile selecting the kernel arguments. vm renders the
+              base hardening arguments; amd and intel add the bare-metal and the vendor
+              IOMMU arguments.
+          kernel_cmdline:
+            type: list
+            elements: str
+            description: Additional kernel arguments, appended after those of the hardware
+              profile.
+          clearpart:
+            type: str
+            description: The clearpart command.
+          autopart:
+            type: str
+            description: The autopart command; used only when partitions is empty.
+          reqpart:
+            type: str
+            description: The reqpart command; used only when partitions and autopart are
+              empty.
+          partitions:
+            type: list
+            elements: str
+            description: The part commands. The Btrfs, volume group and logical volume lists
+              are rendered only with partitions.
+          btrfs_volumes:
+            type: list
+            elements: str
+            description: The btrfs commands that create volumes.
+          btrfs_subvolumes:
+            type: list
+            elements: str
+            description: The btrfs commands that create subvolumes.
+          volgroups:
+            type: list
+            elements: str
+            description: The volgroup commands.
+          logvols:
+            type: list
+            elements: str
+            description: The logvol commands.
+          networks:
+            type: list
+            elements: str
+            description: The network commands.
+          firewall:
+            type: str
+            description: The firewall command.
+          services:
+            type: str
+            description: The services command.
+          selinux:
+            type: str
+            description: The selinux command.
+          skipx:
+            type: bool
+            description: Render the skipx command.
+          xconfig:
+            type: str
+            description: The xconfig command.
+          authselect:
+            type: str
+            description: The authselect command.
+          groups:
+            type: list
+            elements: str
+            description: The group commands.
+          users:
+            type: list
+            elements: str
+            description: The user commands.
+          rootpw:
+            type: str
+            description: The rootpw command. The default locks the root password.
+          sshkeys:
+            type: list
+            elements: str
+            description: The sshkey commands; ksvalidator accepts one per user. The default
+              authorizes the first key published at github.com/jomrr.keys for root.
+          sshpw:
+            type: str
+            description: The sshpw command for SSH access during installation.
+          pwpolicies:
+            type: list
+            elements: str
+            description: The pwpolicy commands rendered into an anaconda section.
+          realm:
+            type: str
+            description: The realm command.
+          keyboard:
+            type: str
+            description: The keyboard command.
+          language:
+            type: str
+            description: The lang command.
+          timezone:
+            type: str
+            description: The timezone command.
+          timesource:
+            type: str
+            description: The timesource command.
+          vnc:
+            type: str
+            description: The vnc command.
+          packages:
+            type: list
+            elements: str
+            description: Packages added to the common and distribution package lists; prefix
+              a name with - to exclude it.
+          post:
+            type: str
+            description: Shell script rendered into a post section.
+          finish:
+            type: str
+            description: The command run after installation, one of halt, reboot, poweroff
+              or shutdown.
+          template:
+            type: str
+            description: Complete kickstart content; when set, it replaces everything the
+              role would render.
+          dest:
+            type: path
+            required: true
+            description: Absolute path of the kickstart file on the host running the role.
+          distribution:
+            type: str
+            required: true
+            choices:
+              - AlmaLinux
+              - Fedora
+            description: Distribution the kickstart file installs.
+          distribution_major_version:
+            type: str
+            required: true
+            description: Major version the kickstart file installs. Together with distribution
+              it selects the file vars/<distribution>-<distribution_major_version>.yml with
+              the package list and the default version, url and repos. The role ships AlmaLinux-10
+              and Fedora-44.

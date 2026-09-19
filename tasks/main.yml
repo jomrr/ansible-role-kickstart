@@ -1,21 +1,17 @@
 ---
-# code: language=ansible
-# role: jomrr.kickstart
+# role: kickstart
 # file: tasks/main.yml
 
-- name: "Install pykickstart"
+- name: KICKSTART | Install pykickstart
   become: true
-  ansible.builtin.dnf:
+  become_user: root
+  ansible.builtin.package:
     name: pykickstart
     state: present
 
-- name: "Create kickstart file"
-  become: false
-  ansible.builtin.template:
-    src: kickstart.cfg.j2
-    dest: "{{ ks.dest }}"
-    mode: '0660'
-    validate: ksvalidator --version={{ ks.version }} %s
-  vars:
-    ks: "{{ kickstart_defaults | combine(item, recursive=True) }}"
+- name: KICKSTART | Create kickstart files
+  ansible.builtin.include_tasks: file.yml
   loop: "{{ kickstart_files }}"
+  loop_control:
+    loop_var: __kickstart_item
+    label: "{{ __kickstart_item.dest }}"

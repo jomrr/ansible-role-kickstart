@@ -1,6 +1,6 @@
 ---
 # role: kickstart
-# file: molecule/default/molecule.yml
+# file: molecule/dev/molecule.yml
 
 dependency:
   name: "galaxy"
@@ -13,9 +13,12 @@ provisioner:
       forks: 8
       interpreter_python: "auto_silent"
       allow_world_readable_tmpfiles: true
-      callbacks_enabled: "ansible.posix.profile_tasks,ansible.posix.timer"
+      callbacks_enabled: "ansible.builtin.default"
       callback_result_format: "yaml"
       remote_tmp: "/tmp/.ansible/tmp"
+      display_ok_hosts: false
+      display_skipped_hosts: false
+      show_task_path_on_failure: true
     ssh_connection:
       pipelining: true
   log: true
@@ -59,10 +62,15 @@ provisioner:
 verifier:
   name: "ansible"
 scenario:
-  name: "default"
+  name: "dev"
 platforms:
   - pre_build_image: true
     override_command: false
     systemd: "true"
-    name: "kickstart-${img:-almalinux}"
-    image: "docker.io/${uns:-jomrr}/molecule-${img:-almalinux}:${tag:-10}"
+    name: "kickstart-almalinux"
+    image: "docker.io/${uns:-jomrr}/molecule-almalinux:10"
+  - pre_build_image: true
+    override_command: false
+    systemd: "true"
+    name: "kickstart-fedora"
+    image: "docker.io/${uns:-jomrr}/molecule-fedora:latest"

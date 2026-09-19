@@ -1,27 +1,41 @@
 [project]
 name = "kickstart"
 version = "0.0.0"
-description = "Ansible role for generating kickstart files."
-authors = ["Jonas Mauer"]
+description = "Ansible role for generating validated kickstart files for AlmaLinux and Fedora."
+requires-python = ">=3.12"
+authors = [
+  { name = "Jonas Mauer" },
+]
 license = "MIT"
-keywords = ["kickstart", "unattended"]
-repository = "https://github.com/jomrr/ansible-role-kickstart"
+keywords = ["almalinux", "fedora", "kickstart", "unattended"]
+
+[project.urls]
+Repository = "https://github.com/jomrr/ansible-role-kickstart"
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+ansible = [
+  "ansible-core==2.20.*",
+  "ansible-lint==26.*",
+]
+
+podman = [
+  "molecule==26.*",
+  "molecule-plugins[podman]==25.*",
+]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
 
 [tool.semantic_release]
+branch = "main"
 commit_message = "build(release): version {version}"
-major_on_zero = false
+major_on_zero = true
 upload_to_pypi = false
 upload_to_vcs_release = true
-version_toml = ["pyproject.toml:project.version"]
-
-[tool.tox]
-envlist = ["lint"]
-
-[tool.tox.env.lint]
-description = "Lint code"
-skip_install = true
-deps = ["ansible-lint"]
-commands = [["ansible-lint", "--offline"]]
+tag_format = "v{version}"
+version_toml = [
+    "pyproject.toml:project.version",
+]

@@ -1,0 +1,68 @@
+---
+# role: kickstart
+# file: vars/main.yml
+
+# Commands rendered into every kickstart file.
+__kickstart_commands:
+  - "eula --agreed"
+  - "firstboot --disable"
+  - "zerombr"
+
+# Anaconda add-on sections rendered into every kickstart file.
+__kickstart_addons:
+  - "com_redhat_kdump --disable"
+
+# Kernel command line argument sets.
+__kickstart_kernel_cmdline:
+  base:
+    - mitigations=auto
+    - debugfs=off
+    - init_on_alloc=1
+    - init_on_free=1
+    - kexec_load_disabled=1
+    - lockdown=integrity
+    - module.sig_enforce=1
+    - page_alloc.shuffle=1
+    - pti=on
+    - randomize_kstack_offset=on
+    - slab_nomerge
+    - spec_store_bypass_disable=on
+    - vsyscall=none
+  metal:
+    - efi=disable_early_pci_dma
+    - iommu=force
+    - iommu.strict=1
+  amd:
+    - amd_iommu=force_isolation
+  intel:
+    - intel_iommu=on
+
+# Argument sets rendered for each hardware profile, in this order.
+__kickstart_hardware_profiles:
+  vm: [base]
+  intel: [intel, base, metal]
+  amd: [amd, base, metal]
+
+# Packages installed or removed on every supported distribution.
+__kickstart_common_packages:
+  - bash
+  - bash-completion
+  - dnf-plugins-core
+  - firewalld
+  - libpwquality
+  - python3
+  - python3-dnf
+  - python3-libselinux
+  - python3-libsemanage
+  - python3-pip
+  - python3-pwquality
+  - qemu-guest-agent
+  - tree
+  - vim-enhanced
+  - zstd
+  - -iw*
+  - -libsss_*
+  - -nano
+  - -setroubleshoot*
+  - -sssd*
+  - -zram-generator*

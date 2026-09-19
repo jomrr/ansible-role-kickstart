@@ -1,0 +1,22 @@
+---
+# role: kickstart
+# file: tasks/file.yml
+
+- name: KICKSTART | Load distribution settings
+  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', __kickstart_platform_files) }}"
+  vars:
+    __kickstart_platform_files:
+      files:
+        - "{{ __kickstart_item.distribution }}-{{ __kickstart_item.distribution_major_version }}.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: KICKSTART | Render kickstart file
+  ansible.builtin.template:
+    src: kickstart.cfg.j2
+    dest: "{{ __kickstart_file.dest }}"
+    mode: '0660'
+    validate: "ksvalidator --version={{ __kickstart_file.version }} %s"
+  vars:
+    __kickstart_file: >-
+      {{ __kickstart_platform | combine(kickstart_defaults, __kickstart_item, recursive=True) }}

@@ -1,218 +1,215 @@
-# {{ ks.version }}
-# code: language=ansible-jinja
-# role: jomrr.kickstart
+#version={{ __kickstart_file.version }}
+
 # file: {{ template_destpath }}
 
-{% if ks.template | default('') | length > 0 %}
-{{ ks.template }}
+{% if __kickstart_file.template | default('') | length > 0 %}
+{{ __kickstart_file.template }}
 {% else %}
-eula        --agreed
+# installer basics
+{% for __kickstart_command in __kickstart_commands %}
+{{ __kickstart_command }}
+{% endfor %}
+{% if __kickstart_file.target | default('') | length > 0 %}
 
-# initial setup
-firstboot   --disable
-{% if ks.target | default('') | length > 0 %}
-
-# installation environment
-{{ ks.target }}
+# installation mode
+{{ __kickstart_file.target }}
 {% endif %}
-{% if ks.bootloader | default('') | length > 0 %}
+{% if __kickstart_file.bootloader | default('') | length > 0 %}
 
 # bootloader configuration
-{{ ks.bootloader }}
+{%  set __kickstart_kernel_args = (__kickstart_hardware_profiles[__kickstart_file.hardware | default('')] | default([])
+                                   | map('extract', __kickstart_kernel_cmdline) | flatten)
+                                  + (__kickstart_file.kernel_cmdline | default([])) %}
+{{ __kickstart_file.bootloader }}{{ ' --append="' ~ (__kickstart_kernel_args | join(' ')) ~ '"' if __kickstart_kernel_args | length > 0 else '' }}
 {% endif %}
-{% if ks.clearpart | default('') | length > 0 %}
+{% if __kickstart_file.clearpart | default('') | length > 0 %}
 
 # clearpart
-{{ ks.clearpart }}
+{{ __kickstart_file.clearpart }}
 {% endif %}
-{% if ks.zerombr | default('') | length > 0 %}
-
-# zerombr
-{{ ks.zerombr }}
-{% endif %}
-{% if ks.url | default('') | length > 0 %}
+{% if __kickstart_file.url | default('') | length > 0 %}
 
 # installation mirror
-{{ ks.url }}
+{{ __kickstart_file.url }}
 {% endif %}
-{% if ks.repos | default([]) | length > 0 %}
+{% if __kickstart_file.repos | default([]) | length > 0 %}
 
 # repository configuration
-{%  for repo in ks.repos %}
-{{ repo }}
+{%  for __kickstart_repo in __kickstart_file.repos %}
+{{ __kickstart_repo }}
 {%  endfor %}
 {% endif %}
-{% if ks.partitions | default([]) | length > 0 %}
+{% if __kickstart_file.partitions | default([]) | length > 0 %}
 
 # partitions
-{%  for part in ks.partitions %}
-{{ part }}
+{%  for __kickstart_partition in __kickstart_file.partitions %}
+{{ __kickstart_partition }}
 {%  endfor %}
-{%  if ks.btrfs_volumes | default([]) | length > 0 %}
+{%  if __kickstart_file.btrfs_volumes | default([]) | length > 0 %}
 
 # btrfs volumes
-{%      for btrfs_volume in ks.btrfs_volumes %}
-{{ btrfs_volume }}
+{%      for __kickstart_btrfs_volume in __kickstart_file.btrfs_volumes %}
+{{ __kickstart_btrfs_volume }}
 {%      endfor %}
 {%  endif %}
-{%  if ks.btrfs_subvolumes | default([]) | length > 0 %}
+{%  if __kickstart_file.btrfs_subvolumes | default([]) | length > 0 %}
 
 # btrfs subvolumes
-{%      for btrfs_subvolume in ks.btrfs_subvolumes %}
-{{ btrfs_subvolume }}
+{%      for __kickstart_btrfs_subvolume in __kickstart_file.btrfs_subvolumes %}
+{{ __kickstart_btrfs_subvolume }}
 {%      endfor %}
 {%  endif %}
-{%  if ks.volgroups | default([]) | length > 0 %}
+{%  if __kickstart_file.volgroups | default([]) | length > 0 %}
 
 # volume groups
-{%      for vg in ks.volgroups %}
-{{ vg }}
+{%      for __kickstart_volgroup in __kickstart_file.volgroups %}
+{{ __kickstart_volgroup }}
 {%      endfor %}
 {%  endif %}
-{%  if ks.logvols | default([]) | length > 0 %}
+{%  if __kickstart_file.logvols | default([]) | length > 0 %}
 
 # logical volumes
-{%      for lv in ks.logvols %}
-{{ lv }}
+{%      for __kickstart_logvol in __kickstart_file.logvols %}
+{{ __kickstart_logvol }}
 {%      endfor %}
 {%  endif %}
-{% elif ks.autopart | default([]) | length > 0 %}
+{% elif __kickstart_file.autopart | default('') | length > 0 %}
 
-# automatic partioning
-{{ ks.autopart }}
-{% elif ks.reqpart | default([]) | length > 0 %}
+# automatic partitioning
+{{ __kickstart_file.autopart }}
+{% elif __kickstart_file.reqpart | default('') | length > 0 %}
 
 # required partitions
-{{ ks.reqpart }}
+{{ __kickstart_file.reqpart }}
 {% endif %}
-{% if ks.networks | default([]) | length > 0 %}
+{% if __kickstart_file.networks | default([]) | length > 0 %}
 
 # network configuration
-{%  for network in ks.networks %}
-{{ network }}
+{%  for __kickstart_network in __kickstart_file.networks %}
+{{ __kickstart_network }}
 {%  endfor %}
 {% endif %}
-{% if ks.firewall | default('') | length > 0 %}
+{% if __kickstart_file.firewall | default('') | length > 0 %}
 
 # firewall
-{{ ks.firewall }}
+{{ __kickstart_file.firewall }}
 {% endif %}
-{% if ks.services | default('') | length > 0 %}
+{% if __kickstart_file.services | default('') | length > 0 %}
 
 # services
-{{ ks.services }}
+{{ __kickstart_file.services }}
 {% endif %}
-{% if ks.timezone | default('') | length > 0 %}
+{% if __kickstart_file.timezone | default('') | length > 0 %}
 
 # timezone
-{{ ks.timezone }}
+{{ __kickstart_file.timezone }}
 {% endif %}
-{% if ks.timesource | default('') | length > 0 %}
+{% if __kickstart_file.timesource | default('') | length > 0 %}
 
 # timesource: ntp server, pool or disable
-{{ ks.timesource }}
+{{ __kickstart_file.timesource }}
 {% endif %}
-{% if ks.keyboard | default('') | length > 0 %}
+{% if __kickstart_file.keyboard | default('') | length > 0 %}
 
 # keyboard
-{{ ks.keyboard }}
+{{ __kickstart_file.keyboard }}
 {% endif %}
-{% if ks.language | default('') | length > 0 %}
+{% if __kickstart_file.language | default('') | length > 0 %}
 
 # language
-{{ ks.language }}
+{{ __kickstart_file.language }}
 {% endif %}
-{% if ks.selinux | default('') | length > 0 %}
+{% if __kickstart_file.selinux | default('') | length > 0 %}
 
 # selinux
-{{ ks.selinux }}
+{{ __kickstart_file.selinux }}
 {% endif %}
-{% if ks.skipx | default(true) | bool %}
+{% if __kickstart_file.skipx | default(true) | bool %}
 
 # do not configure x window system
 skipx
 {% endif %}
-{% if ks.xconfig | default('') | length > 0 %}
+{% if __kickstart_file.xconfig | default('') | length > 0 %}
 
 # configure x window system
-{{ ks.xconfig }}
+{{ __kickstart_file.xconfig }}
 {% endif %}
-{% if ks.authselect | default('') | length > 0 %}
+{% if __kickstart_file.authselect | default('') | length > 0 %}
 
 # configure authentication
-{{ ks.authselect }}
+{{ __kickstart_file.authselect }}
 {% endif %}
-{% if ks.groups | default([]) | length > 0 %}
+{% if __kickstart_file.groups | default([]) | length > 0 %}
 
 # create user groups
-{%  for group in ks.groups %}
-{{ group }}
+{%  for __kickstart_group in __kickstart_file.groups %}
+{{ __kickstart_group }}
 {%  endfor %}
 {% endif %}
-{% if ks.users | default([]) | length > 0 %}
+{% if __kickstart_file.users | default([]) | length > 0 %}
 
 # create users
-{%  for user in ks.users %}
-{{ user }}
+{%  for __kickstart_user in __kickstart_file.users %}
+{{ __kickstart_user }}
 {%  endfor %}
 {% endif %}
-{% if ks.rootpw | default('') | length > 0 %}
+{% if __kickstart_file.rootpw | default('') | length > 0 %}
 
 # root password
-{{ ks.rootpw }}
+{{ __kickstart_file.rootpw }}
 {% endif %}
-{% if ks.sshkeys | default([]) | length > 0 %}
+{% if __kickstart_file.sshkeys | default([]) | length > 0 %}
 
 # add ssh key(s) to authorized_keys
-{%  for sshkey in ks.sshkeys %}
-{{ sshkey }}
+{%  for __kickstart_sshkey in __kickstart_file.sshkeys %}
+{{ __kickstart_sshkey }}
 {%  endfor %}
 {% endif %}
-{% if ks.sshpw | default('') | length > 0 %}
+{% if __kickstart_file.sshpw | default('') | length > 0 %}
 
 # restrict ssh access during installation
-{{ ks.sshpw }}
+{{ __kickstart_file.sshpw }}
 {% endif %}
-{% if ks.realm | default('') | length > 0 %}
+{% if __kickstart_file.realm | default('') | length > 0 %}
 
 # join realm or ad domain
-{{ ks.realm }}
+{{ __kickstart_file.realm }}
 {% endif %}
-{% if ks.vnc | default('') | length > 0 %}
+{% if __kickstart_file.vnc | default('') | length > 0 %}
 
 # vnc remote access
-{{ ks.vnc }}
+{{ __kickstart_file.vnc }}
 {% endif %}
-{% if ks.packages | default([]) | length > 0 %}
 
 # packages to install and remove
 %packages   --ignoremissing
-{{ ks.packages | join("\n") }}
+{{ (__kickstart_common_packages + __kickstart_packages + __kickstart_file.packages | default([])) | join("\n") }}
 %end
-{% endif %}
-{% if ks.pwpolicies | default([]) | length > 0 %}
+{% if __kickstart_file.pwpolicies | default([]) | length > 0 %}
 
 # password policies
 %anaconda
-{%  for pwpolicy in ks.pwpolicies %}
-{{ pwpolicy }}
+{%  for __kickstart_pwpolicy in __kickstart_file.pwpolicies %}
+{{ __kickstart_pwpolicy }}
 {%  endfor %}
 %end
 {% endif %}
-{% if ks.post | default('') | length > 0 %}
 
-# disable kernel dumps
-%addon com_redhat_kdump --disable
+# installer add-ons
+{% for __kickstart_addon in __kickstart_addons %}
+%addon {{ __kickstart_addon }}
 %end
+{% endfor %}
+{% if __kickstart_file.post | default('') | length > 0 %}
 
 # post-install actions
 %post --log=/root/postinstall.log
-{{ ks.post }}
+{{ __kickstart_file.post }}
 %end
 {% endif %}
-{% if ks.finish | default('reboot --eject') | length > 0 %}
+{% if __kickstart_file.finish | default('') | length > 0 %}
 
 # system operation after installation (halt, reboot, poweroff, shutdown)
-{{ ks.finish }}
+{{ __kickstart_file.finish }}
 {% endif %}
 {% endif %}

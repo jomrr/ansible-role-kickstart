@@ -1,0 +1,15 @@
+---
+# role: kickstart
+# file: vars/AlmaLinux-10.yml
+
+# Distribution values; kickstart_defaults and every file entry can override them.
+__kickstart_platform:
+  version: RHEL10
+  url: "url --url=https://repo.almalinux.org/almalinux/10/BaseOS/x86_64/kickstart/"
+  repos:
+    - "repo --name=appstream --baseurl=https://repo.almalinux.org/almalinux/10/AppStream/x86_64/kickstart/"
+
+# Packages for a minimal AlmaLinux 10 installation.
+__kickstart_packages:
+  - "@^minimal-environment"
+  - dnf-automatic

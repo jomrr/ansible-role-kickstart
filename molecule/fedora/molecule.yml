@@ -1,6 +1,6 @@
 ---
 # role: kickstart
-# file: molecule/default/molecule.yml
+# file: molecule/fedora/molecule.yml
 
 dependency:
   name: "galaxy"
@@ -59,10 +59,10 @@ provisioner:
 verifier:
   name: "ansible"
 scenario:
-  name: "default"
+  name: "fedora"
 platforms:
   - pre_build_image: true
     override_command: false
     systemd: "true"
-    name: "kickstart-${img:-almalinux}"
-    image: "docker.io/${uns:-jomrr}/molecule-${img:-almalinux}:${tag:-10}"
+    name: "kickstart-fedora"
+    image: "docker.io/${uns:-jomrr}/molecule-fedora:latest"

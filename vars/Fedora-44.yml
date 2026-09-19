@@ -1,0 +1,18 @@
+---
+# role: kickstart
+# file: vars/Fedora-44.yml
+
+# Distribution values; kickstart_defaults and every file entry can override them.
+__kickstart_platform:
+  version: F44
+  url: "url --url=https://ftp.fau.de/fedora/linux/releases/44/Everything/x86_64/os/"
+  repos:
+    - "repo --name=fedora-updates --baseurl=https://ftp.fau.de/fedora/linux/updates/44/Everything/x86_64/ --cost=0"
+
+# Packages for a minimal Fedora 44 installation.
+__kickstart_packages:
+  - "@^minimal-environment"
+  - dnf5-plugin-automatic
+  - vim-default-editor
+  - -abrt*
+  - -nano-default-editor
