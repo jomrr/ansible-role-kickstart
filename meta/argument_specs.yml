@@ -21,6 +21,7 @@ argument_specs:
           hardware: vm
           kernel_cmdline: []
           clearpart: clearpart --all --initlabel --drives=vda
+          tpm2_pcrs: 7+14+15:sha256=0000000000000000000000000000000000000000000000000000000000000000
           partitions:
             - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
             - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
@@ -102,7 +103,9 @@ argument_specs:
           bootloader:
             type: str
             description: The bootloader command. The role adds --append with the kernel
-              arguments, so an --append given here is overridden.
+              arguments, so an --append given here is overridden. A bootloader password
+              is given here as --password and is written to the kickstart file in plain
+              text.
           hardware:
             type: str
             choices:
@@ -121,6 +124,17 @@ argument_specs:
           clearpart:
             type: str
             description: The clearpart command.
+          luks_passphrase:
+            type: str
+            no_log: true
+            description: LUKS provisioning passphrase. The role adds it as --passphrase
+              to every partitions, logvols and autopart line that contains --encrypted and
+              passes it to the tpm-cryptenroll post script. Required when a line uses --encrypted.
+              The value is written to the kickstart file in plain text.
+          tpm2_pcrs:
+            type: str
+            description: TPM2 PCRs the LUKS devices are bound to by the tpm-cryptenroll
+              post script.
           autopart:
             type: str
             description: The autopart command; used only when partitions is empty.
@@ -261,6 +275,12 @@ argument_specs:
                 type: bool
                 description: Mask the systemd sleep, suspend, hibernate and hybrid-sleep
                   targets.
+              tpm-cryptenroll:
+                type: bool
+                description: 'Bind all LUKS devices to the TPM2, add the TPM2 options to
+                  crypttab and rebuild the initramfs. The default comes from the hardware
+                  profile: true for amd and intel, false for vm. The script runs last and
+                  aborts the installation when it fails.'
           post:
             type: str
             description: Shell script rendered into a post section after the built-in post
@@ -302,7 +322,9 @@ argument_specs:
           bootloader:
             type: str
             description: The bootloader command. The role adds --append with the kernel
-              arguments, so an --append given here is overridden.
+              arguments, so an --append given here is overridden. A bootloader password
+              is given here as --password and is written to the kickstart file in plain
+              text.
           hardware:
             type: str
             choices:
@@ -321,6 +343,17 @@ argument_specs:
           clearpart:
             type: str
             description: The clearpart command.
+          luks_passphrase:
+            type: str
+            no_log: true
+            description: LUKS provisioning passphrase. The role adds it as --passphrase
+              to every partitions, logvols and autopart line that contains --encrypted and
+              passes it to the tpm-cryptenroll post script. Required when a line uses --encrypted.
+              The value is written to the kickstart file in plain text.
+          tpm2_pcrs:
+            type: str
+            description: TPM2 PCRs the LUKS devices are bound to by the tpm-cryptenroll
+              post script.
           autopart:
             type: str
             description: The autopart command; used only when partitions is empty.
@@ -461,6 +494,12 @@ argument_specs:
                 type: bool
                 description: Mask the systemd sleep, suspend, hibernate and hybrid-sleep
                   targets.
+              tpm-cryptenroll:
+                type: bool
+                description: 'Bind all LUKS devices to the TPM2, add the TPM2 options to
+                  crypttab and rebuild the initramfs. The default comes from the hardware
+                  profile: true for amd and intel, false for vm. The script runs last and
+                  aborts the installation when it fails.'
           post:
             type: str
             description: Shell script rendered into a post section after the built-in post

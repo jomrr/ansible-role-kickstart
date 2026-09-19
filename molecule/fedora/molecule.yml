@@ -30,11 +30,19 @@ provisioner:
             distribution: "AlmaLinux"
             distribution_major_version: "10"
             hardware: "amd"
+            luks_passphrase: "molecule-luks"
+            partitions:
+              - "part /boot/efi --ondrive=vda --size=2048 --fstype=efi"
+              - "part btrfs.0 --ondrive=vda --size=1 --grow --fstype=btrfs --encrypted --luks-version=luks2"
             networks:
               - "network --bootproto=dhcp --hostname=almalinux.kickstart.test"
         __kickstart_test_expected:
           - "zerombr"
           - "--append=\"amd_iommu=force_isolation mitigations=auto"
+          - "--encrypted --luks-version=luks2 --passphrase=molecule-luks"
+          - "ks-post-tpm-cryptenroll.log --erroronfail"
+          - "KS_TPM2_PCRS=7+14+15:sha256="
+          - "KS_LUKS_PASSPHRASE=molecule-luks"
           - "--excludedocs"
           - "python3-dnf"
           - "python3-virt-firmware"
@@ -89,6 +97,8 @@ provisioner:
           - "ks-post-harden-sysctl.log"
         __kickstart_test_unexpected:
           - "ks-post-systemd-disable-sleep.log"
+          - "ks-post-tpm-cryptenroll.log"
+          - "--passphrase="
           - "dnf-automatic.timer"
           - "python3-dnf"
           - "python3-virt-firmware"

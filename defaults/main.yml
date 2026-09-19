@@ -17,7 +17,8 @@ kickstart_defaults:
   # restrict the installer to the installation disk
   ignoredisk: "ignoredisk --only-use=vda"
   # bootloader settings; the role adds --append with the kernel arguments, so
-  # an --append given here is overridden
+  # an --append given here is overridden. A bootloader password is given here
+  # as --password and is written to the kickstart file in plain text.
   bootloader: "bootloader --driveorder=vda --location=mbr"
   # hardware profile selecting the package sets and kernel arguments from vars/:
   # vm (virtual machine), intel or amd (bare metal with the vendor GPU firmware
@@ -27,6 +28,13 @@ kickstart_defaults:
   kernel_cmdline: []
   # delete partitions and initialize the disk label
   clearpart: "clearpart --all --initlabel --drives=vda"
+  # LUKS provisioning passphrase. The role adds it as --passphrase to every
+  # partitions, logvols and autopart line that contains --encrypted and passes
+  # it to the tpm-cryptenroll post script. Required when a line uses
+  # --encrypted. The value is written to the kickstart file in plain text.
+  # luks_passphrase:
+  # TPM2 PCRs the LUKS devices are bound to by the tpm-cryptenroll post script
+  tpm2_pcrs: "7+14+15:sha256=0000000000000000000000000000000000000000000000000000000000000000"
   # partitions take precedence over autopart and autopart over reqpart
   # autopart: "autopart --type=btrfs"
   # reqpart: "reqpart --add-boot"
@@ -123,6 +131,9 @@ kickstart_defaults:
     harden-sysctl-net-ipv6: true
     harden-sysctl: true
     systemd-disable-sleep: true
+    # tpm-cryptenroll binds all LUKS devices to the TPM2. Its default comes from
+    # the hardware profile: true for intel and amd, false for vm. It runs last.
+    # tpm-cryptenroll: true
   # additional post-install actions, rendered after the built-in post scripts
   # post: |-
   #   cat << EOF >> /etc/modprobe.d/hardening.conf

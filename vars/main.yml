@@ -38,17 +38,34 @@ __kickstart_kernel_cmdline:
     - intel_iommu=on
 
 # Package sets and kernel argument sets rendered for each hardware profile, in
-# this order. The package set all is rendered for every profile.
+# this order. The package set all is rendered for every profile. post_scripts
+# holds the defaults of post scripts that depend on the hardware; the
+# post_scripts key of a kickstart file overrides them.
 __kickstart_hardware_profiles:
   vm:
     packages: [vm]
     kernel_cmdline: [base]
+    post_scripts:
+      tpm-cryptenroll: false
   intel:
     packages: [metal, intel]
     kernel_cmdline: [intel, base, metal]
+    post_scripts:
+      tpm-cryptenroll: true
   amd:
     packages: [metal, amd]
     kernel_cmdline: [amd, base, metal]
+    post_scripts:
+      tpm-cryptenroll: true
+
+# Options and shell variables of single post scripts. The value of a variable
+# comes from the named key of the kickstart file.
+__kickstart_post_script_settings:
+  tpm-cryptenroll:
+    options: --erroronfail
+    variables:
+      KS_TPM2_PCRS: tpm2_pcrs
+      KS_LUKS_PASSPHRASE: luks_passphrase
 
 # Options of the packages section.
 __kickstart_packages_options:

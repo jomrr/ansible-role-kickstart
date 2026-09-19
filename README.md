@@ -62,6 +62,7 @@ kickstart_defaults:
   hardware: vm
   kernel_cmdline: []
   clearpart: clearpart --all --initlabel --drives=vda
+  tpm2_pcrs: 7+14+15:sha256=0000000000000000000000000000000000000000000000000000000000000000
   partitions:
     - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
     - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
@@ -162,9 +163,13 @@ The role manages no services and has no handlers.
   added after installation.
 - The default sshkeys value is loaded from GitHub on every run, so the host
   running the role needs network access to github.com.
-- The role is designed to render no secrets. Password hashes set through rootpw
-  or users are written to the kickstart file and appear in the task output when
-  Ansible runs with --diff.
+- The defaults render no secrets. luks_passphrase has no default; when set, it
+  is written to the kickstart file in plain text, as are a bootloader password
+  given as --password in bootloader and password hashes set through rootpw or
+  users. The file is written with mode 0660, and its content appears in the task
+  output when Ansible runs with --diff.
+- tpm-cryptenroll keeps the provisioning passphrase as a valid LUKS key slot
+  after the TPM2 enrollment. Replace or remove it after installation.
 
 ## Operational Notes
 
@@ -195,6 +200,16 @@ The role manages no services and has no handlers.
   dnf-automatic on AlmaLinux and dnf5-plugin-automatic on Fedora. Updates are
   applied automatically, and Fedora hosts reboot on their own when an update
   needs it.
+- luks_passphrase is entered once: the role adds it as --passphrase to every
+  partitions, logvols and autopart line that contains --encrypted and passes it
+  to tpm-cryptenroll. Rendering fails when a line uses --encrypted and
+  luks_passphrase is missing. It overrides a --passphrase given in a raw line.
+- tpm-cryptenroll binds all LUKS devices to the TPM2 with the PCRs of tpm2_pcrs,
+  adds the TPM2 options to crypttab and rebuilds the initramfs. Its default
+  comes from the hardware profile: on for amd and intel, off for vm; an entry
+  can override it, for example for a virtual machine with a vTPM. It runs after
+  the other scripts, does nothing without LUKS devices and aborts the
+  installation when it fails. The default storage layout is unencrypted.
 - Commands rendered into every file (eula, firstboot, zerombr, disabled kdump
   add-on) are not configurable.
 

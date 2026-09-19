@@ -6,6 +6,9 @@
 {{ __kickstart_file.template }}
 {% else %}
 {% set __kickstart_hardware = __kickstart_hardware_profiles[__kickstart_file.hardware | default('')] | default({}) %}
+{% macro __kickstart_storage(__kickstart_line) %}
+{{ __kickstart_line }}{{ ' --passphrase=' ~ (__kickstart_file.luks_passphrase | quote) if '--encrypted' in __kickstart_line else '' }}
+{%- endmacro %}
 # installer basics
 {% for __kickstart_command in __kickstart_commands %}
 {{ __kickstart_command }}
@@ -49,7 +52,7 @@
 
 # partitions
 {%  for __kickstart_partition in __kickstart_file.partitions %}
-{{ __kickstart_partition }}
+{{ __kickstart_storage(__kickstart_partition) }}
 {%  endfor %}
 {%  if __kickstart_file.btrfs_volumes | default([]) | length > 0 %}
 
@@ -76,13 +79,13 @@
 
 # logical volumes
 {%      for __kickstart_logvol in __kickstart_file.logvols %}
-{{ __kickstart_logvol }}
+{{ __kickstart_storage(__kickstart_logvol) }}
 {%      endfor %}
 {%  endif %}
 {% elif __kickstart_file.autopart | default('') | length > 0 %}
 
 # automatic partitioning
-{{ __kickstart_file.autopart }}
+{{ __kickstart_storage(__kickstart_file.autopart) }}
 {% elif __kickstart_file.reqpart | default('') | length > 0 %}
 
 # required partitions
@@ -209,7 +212,9 @@ skipx
 %addon {{ __kickstart_addon }}
 %end
 {% endfor %}
-{% for __kickstart_script in __kickstart_file.post_scripts | default({}) | dict2items %}
+{% set __kickstart_post_scripts = __kickstart_file.post_scripts | default({}) %}
+{% for __kickstart_script in __kickstart_post_scripts
+     | combine(__kickstart_hardware.post_scripts | default({}) | combine(__kickstart_post_scripts)) | dict2items %}
 {%  if __kickstart_script.value | bool %}
 
 {%   set __kickstart_script_files = {
@@ -217,7 +222,12 @@ skipx
                  ~ '/' ~ __kickstart_script.key ~ '.sh',
                  __kickstart_script.key ~ '.sh'],
        'paths': [role_path ~ '/files/post']} %}
-%post --interpreter=/usr/bin/bash --logfile=/root/anaconda/ks-post-{{ __kickstart_script.key }}.log
+{%   set __kickstart_script_settings = __kickstart_post_script_settings[__kickstart_script.key] | default({}) %}
+{%   set __kickstart_script_options = __kickstart_script_settings.options | default('') %}
+%post --interpreter=/usr/bin/bash --logfile=/root/anaconda/ks-post-{{ __kickstart_script.key }}.log{{ ' ' ~ __kickstart_script_options if __kickstart_script_options | length > 0 else '' }}
+{%   for __kickstart_variable in __kickstart_script_settings.variables | default({}) | dict2items %}
+{{ __kickstart_variable.key }}={{ __kickstart_file[__kickstart_variable.value] | default('') | quote }}
+{%   endfor %}
 {{ lookup('ansible.builtin.file', lookup('ansible.builtin.first_found', __kickstart_script_files)) }}
 %end
 {%  endif %}
