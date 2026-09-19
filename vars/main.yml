@@ -88,14 +88,16 @@ __kickstart_common_packages:
     - -sssd*
     - -zram-generator-*
   vm:
-    - python3-virt-firmware
     - qemu-guest-agent
+    - -amd-gpu-firmware
+    - -intel-gpu-firmware
     - -linux-firmware
   metal:
     - fwupd
     - linux-firmware
     - microcode_ctl
     - nvme-cli
+    - python3-virt-firmware
     - smartmontools
     - systemd-pam
     - tpm2-tools

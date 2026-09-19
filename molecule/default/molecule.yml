@@ -37,6 +37,7 @@ provisioner:
           - "--append=\"amd_iommu=force_isolation mitigations=auto"
           - "--excludedocs"
           - "python3-dnf"
+          - "python3-virt-firmware"
           - "tpm2-tools"
           - "amd-gpu-firmware"
           - "--hostname=almalinux.kickstart.test"
@@ -72,8 +73,9 @@ provisioner:
           - "vsyscall=none console=ttyS0\""
           - "--excludedocs"
           - "qemu-guest-agent"
+          - "-amd-gpu-firmware"
+          - "-intel-gpu-firmware"
           - "python3-libdnf5"
-          - "python3-virt-firmware"
           - "vim-default-editor"
           - "--hostname=fedora.kickstart.test"
           - "rootpw --lock"
@@ -82,6 +84,7 @@ provisioner:
         __kickstart_test_unexpected:
           - "ks-post-systemd-disable-sleep.log"
           - "python3-dnf"
+          - "python3-virt-firmware"
           - "tpm2-tools"
 verifier:
   name: "ansible"
