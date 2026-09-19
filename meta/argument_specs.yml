@@ -68,6 +68,15 @@ argument_specs:
           vnc: ''
           packages: []
           finish: reboot --eject
+          post_scripts:
+            disable-coredumps: true
+            modprobe-blacklist-drivers: true
+            modprobe-blacklist-fs: true
+            modprobe-blacklist-net: true
+            harden-sysctl-net-ipv4: true
+            harden-sysctl-net-ipv6: true
+            harden-sysctl: true
+            systemd-disable-sleep: true
         options:
           version:
             type: str
@@ -200,9 +209,44 @@ argument_specs:
             elements: str
             description: Packages added to the common and distribution package lists; prefix
               a name with - to exclude it.
+          post_scripts:
+            type: dict
+            description: Built-in post scripts from files/post/, each rendered into its
+              own post section with a log file below /root/anaconda. All are enabled by
+              default; set a script to false to leave it out.
+            options:
+              disable-coredumps:
+                type: bool
+                description: Disable core dumps through PAM limits, systemd-coredump, systemd
+                  default limits and sysctl.
+              modprobe-blacklist-drivers:
+                type: bool
+                description: Block the Bluetooth, DVB, FireWire and video capture drivers.
+              modprobe-blacklist-fs:
+                type: bool
+                description: Block rarely used file system modules.
+              modprobe-blacklist-net:
+                type: bool
+                description: Block rarely used network protocol modules.
+              harden-sysctl-net-ipv4:
+                type: bool
+                description: Write the IPv4 hardening sysctl settings.
+              harden-sysctl-net-ipv6:
+                type: bool
+                description: Write the IPv6 hardening sysctl settings, which also disable
+                  router advertisements.
+              harden-sysctl:
+                type: bool
+                description: Write the TTY, file system, kernel, BPF and memory hardening
+                  sysctl settings.
+              systemd-disable-sleep:
+                type: bool
+                description: Mask the systemd sleep, suspend, hibernate and hybrid-sleep
+                  targets.
           post:
             type: str
-            description: Shell script rendered into a post section.
+            description: Shell script rendered into a post section after the built-in post
+              scripts.
           finish:
             type: str
             description: The command run after installation, one of halt, reboot, poweroff
@@ -350,9 +394,44 @@ argument_specs:
             elements: str
             description: Packages added to the common and distribution package lists; prefix
               a name with - to exclude it.
+          post_scripts:
+            type: dict
+            description: Built-in post scripts from files/post/, each rendered into its
+              own post section with a log file below /root/anaconda. All are enabled by
+              default; set a script to false to leave it out.
+            options:
+              disable-coredumps:
+                type: bool
+                description: Disable core dumps through PAM limits, systemd-coredump, systemd
+                  default limits and sysctl.
+              modprobe-blacklist-drivers:
+                type: bool
+                description: Block the Bluetooth, DVB, FireWire and video capture drivers.
+              modprobe-blacklist-fs:
+                type: bool
+                description: Block rarely used file system modules.
+              modprobe-blacklist-net:
+                type: bool
+                description: Block rarely used network protocol modules.
+              harden-sysctl-net-ipv4:
+                type: bool
+                description: Write the IPv4 hardening sysctl settings.
+              harden-sysctl-net-ipv6:
+                type: bool
+                description: Write the IPv6 hardening sysctl settings, which also disable
+                  router advertisements.
+              harden-sysctl:
+                type: bool
+                description: Write the TTY, file system, kernel, BPF and memory hardening
+                  sysctl settings.
+              systemd-disable-sleep:
+                type: bool
+                description: Mask the systemd sleep, suspend, hibernate and hybrid-sleep
+                  targets.
           post:
             type: str
-            description: Shell script rendered into a post section.
+            description: Shell script rendered into a post section after the built-in post
+              scripts.
           finish:
             type: str
             description: The command run after installation, one of halt, reboot, poweroff

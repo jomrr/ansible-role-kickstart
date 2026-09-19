@@ -39,6 +39,16 @@ provisioner:
           - "--hostname=almalinux.kickstart.test"
           - "rootpw --lock"
           - "sshkey --username=root"
+          - "ks-post-disable-coredumps.log"
+          - "ks-post-modprobe-blacklist-drivers.log"
+          - "ks-post-modprobe-blacklist-fs.log"
+          - "ks-post-modprobe-blacklist-net.log"
+          - "ks-post-harden-sysctl-net-ipv4.log"
+          - "ks-post-harden-sysctl-net-ipv6.log"
+          - "ks-post-harden-sysctl.log"
+          - "ks-post-systemd-disable-sleep.log"
+          - "systemctl mask sleep.target"
+        __kickstart_test_unexpected: []
       kickstart-fedora:
         kickstart_files:
           - dest: "/tmp/kickstart-fedora.ks"
@@ -46,6 +56,8 @@ provisioner:
             distribution_major_version: "44"
             kernel_cmdline:
               - "console=ttyS0"
+            post_scripts:
+              systemd-disable-sleep: false
             networks:
               - "network --bootproto=dhcp --hostname=fedora.kickstart.test"
         __kickstart_test_expected:
@@ -56,6 +68,9 @@ provisioner:
           - "--hostname=fedora.kickstart.test"
           - "rootpw --lock"
           - "sshkey --username=root"
+          - "ks-post-harden-sysctl.log"
+        __kickstart_test_unexpected:
+          - "ks-post-systemd-disable-sleep.log"
 verifier:
   name: "ansible"
 scenario:

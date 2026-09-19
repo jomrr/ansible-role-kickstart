@@ -104,7 +104,18 @@ kickstart_defaults:
   packages: []
   # system operation after installation, can be halt, reboot, poweroff, shutdown
   finish: "reboot --eject"
-  # post-install actions
+  # built-in post scripts from files/post/, rendered in this order; an entry
+  # in kickstart_files can switch a single script off
+  post_scripts:
+    disable-coredumps: true
+    modprobe-blacklist-drivers: true
+    modprobe-blacklist-fs: true
+    modprobe-blacklist-net: true
+    harden-sysctl-net-ipv4: true
+    harden-sysctl-net-ipv6: true
+    harden-sysctl: true
+    systemd-disable-sleep: true
+  # additional post-install actions, rendered after the built-in post scripts
   # post: |-
   #   cat << EOF >> /etc/modprobe.d/hardening.conf
   #   install cramfs /bin/true

@@ -200,6 +200,14 @@ skipx
 %addon {{ __kickstart_addon }}
 %end
 {% endfor %}
+{% for __kickstart_script in __kickstart_file.post_scripts | default({}) | dict2items %}
+{%  if __kickstart_script.value | bool %}
+
+%post --interpreter=/usr/bin/bash --logfile=/root/anaconda/ks-post-{{ __kickstart_script.key }}.log
+{{ lookup('ansible.builtin.file', 'post/' ~ __kickstart_script.key ~ '.sh') }}
+%end
+{%  endif %}
+{% endfor %}
 {% if __kickstart_file.post | default('') | length > 0 %}
 
 # post-install actions

@@ -109,6 +109,15 @@ kickstart_defaults:
   vnc: ''
   packages: []
   finish: reboot --eject
+  post_scripts:
+    disable-coredumps: true
+    modprobe-blacklist-drivers: true
+    modprobe-blacklist-fs: true
+    modprobe-blacklist-net: true
+    harden-sysctl-net-ipv4: true
+    harden-sysctl-net-ipv6: true
+    harden-sysctl: true
+    systemd-disable-sleep: true
 ```
 
 ### `kickstart_files`
@@ -170,6 +179,10 @@ The role manages no services and has no handlers.
   the bootloader command and overrides an --append given there.
 - Values are raw kickstart command lines. pykickstart treats a # inside an
   unquoted word as the start of a comment, so quote values that contain it.
+- post_scripts enables the built-in hardening scripts from files/post/. All are
+  on by default. Because entries are merged recursively, an entry switches a
+  single script off by setting only that key to false. The post key renders an
+  additional script after them.
 - Commands rendered into every file (eula, firstboot, zerombr, disabled kdump
   add-on) are not configurable.
 

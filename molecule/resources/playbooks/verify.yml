@@ -19,3 +19,12 @@
       loop_control:
         loop_var: __kickstart_expected
         label: "{{ __kickstart_expected }}"
+
+    - name: KICKSTART | Assert that switched-off post scripts are not rendered
+      ansible.builtin.assert:
+        that: __kickstart_unexpected not in (__kickstart_rendered.content | b64decode)
+        quiet: true
+      loop: "{{ __kickstart_test_unexpected }}"
+      loop_control:
+        loop_var: __kickstart_unexpected
+        label: "{{ __kickstart_unexpected }}"
