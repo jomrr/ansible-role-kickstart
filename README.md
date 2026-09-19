@@ -57,6 +57,7 @@ Default:
 ```yaml
 kickstart_defaults:
   target: text
+  ignoredisk: ignoredisk --only-use=vda
   bootloader: bootloader --driveorder=vda --location=mbr
   hardware: vm
   kernel_cmdline: []

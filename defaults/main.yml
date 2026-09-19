@@ -14,6 +14,8 @@ kickstart_defaults:
   #   - "repo --name=fedora-updates --baseurl=https://ftp.fau.de/fedora/linux/updates/44/Everything/x86_64/ --cost=0"
   # installation mode: graphical, text or cmdline
   target: text
+  # restrict the installer to the installation disk
+  ignoredisk: "ignoredisk --only-use=vda"
   # bootloader settings; the role adds --append with the kernel arguments, so
   # an --append given here is overridden
   bootloader: "bootloader --driveorder=vda --location=mbr"

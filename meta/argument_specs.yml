@@ -16,6 +16,7 @@ argument_specs:
             of the selected distribution and major version in vars/.
         default:
           target: text
+          ignoredisk: ignoredisk --only-use=vda
           bootloader: bootloader --driveorder=vda --location=mbr
           hardware: vm
           kernel_cmdline: []
@@ -92,6 +93,10 @@ argument_specs:
           target:
             type: str
             description: Installation mode command, one of graphical, text or cmdline.
+          ignoredisk:
+            type: str
+            description: The ignoredisk command restricting the installer to the installation
+              disk.
           bootloader:
             type: str
             description: The bootloader command. The role adds --append with the kernel
@@ -278,6 +283,10 @@ argument_specs:
           target:
             type: str
             description: Installation mode command, one of graphical, text or cmdline.
+          ignoredisk:
+            type: str
+            description: The ignoredisk command restricting the installer to the installation
+              disk.
           bootloader:
             type: str
             description: The bootloader command. The role adds --append with the kernel

@@ -15,6 +15,11 @@
 # installation mode
 {{ __kickstart_file.target }}
 {% endif %}
+{% if __kickstart_file.ignoredisk | default('') | length > 0 %}
+
+# installation disk
+{{ __kickstart_file.ignoredisk }}
+{% endif %}
 {% if __kickstart_file.bootloader | default('') | length > 0 %}
 
 # bootloader configuration
