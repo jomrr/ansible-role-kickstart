@@ -111,6 +111,8 @@ kickstart_defaults:
   packages: []
   finish: reboot --eject
   post_scripts:
+    dnf: true
+    dnf-automatic: true
     disable-coredumps: true
     modprobe-blacklist-drivers: true
     modprobe-blacklist-fs: true
@@ -183,10 +185,16 @@ The role manages no services and has no handlers.
   the bootloader command and overrides an --append given there.
 - Values are raw kickstart command lines. pykickstart treats a # inside an
   unquoted word as the start of a comment, so quote values that contain it.
-- post_scripts enables the built-in hardening scripts from files/post/. All are
-  on by default. Because entries are merged recursively, an entry switches a
-  single script off by setting only that key to false. The post key renders an
-  additional script after them.
+- post_scripts enables the built-in scripts from files/post/: a hardened
+  dnf.conf, automatic updates and the hardening scripts. All are on by default.
+  Because entries are merged recursively, an entry switches a single script off
+  by setting only that key to false. The post key renders an additional script
+  after them.
+- A script in `files/post/<distribution>-<distribution_major_version>/` takes
+  precedence over the one in files/post/. dnf-automatic uses this: it installs
+  dnf-automatic on AlmaLinux and dnf5-plugin-automatic on Fedora. Updates are
+  applied automatically, and Fedora hosts reboot on their own when an update
+  needs it.
 - Commands rendered into every file (eula, firstboot, zerombr, disabled kdump
   add-on) are not configurable.
 

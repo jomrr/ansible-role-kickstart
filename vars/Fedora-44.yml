@@ -20,7 +20,6 @@ __kickstart_packages:
     - vim-default-editor
     - -rpmfusion-*
   vm:
-    - dnf5-plugin-automatic
     - -chrony
   metal:
     - python3-dnf

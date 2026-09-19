@@ -212,8 +212,13 @@ skipx
 {% for __kickstart_script in __kickstart_file.post_scripts | default({}) | dict2items %}
 {%  if __kickstart_script.value | bool %}
 
+{%   set __kickstart_script_files = {
+       'files': [__kickstart_file.distribution ~ '-' ~ __kickstart_file.distribution_major_version
+                 ~ '/' ~ __kickstart_script.key ~ '.sh',
+                 __kickstart_script.key ~ '.sh'],
+       'paths': [role_path ~ '/files/post']} %}
 %post --interpreter=/usr/bin/bash --logfile=/root/anaconda/ks-post-{{ __kickstart_script.key }}.log
-{{ lookup('ansible.builtin.file', 'post/' ~ __kickstart_script.key ~ '.sh') }}
+{{ lookup('ansible.builtin.file', lookup('ansible.builtin.first_found', __kickstart_script_files)) }}
 %end
 {%  endif %}
 {% endfor %}

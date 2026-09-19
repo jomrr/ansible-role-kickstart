@@ -43,6 +43,9 @@ provisioner:
           - "--hostname=almalinux.kickstart.test"
           - "rootpw --lock"
           - "sshkey --username=root"
+          - "ks-post-dnf.log"
+          - "ks-post-dnf-automatic.log"
+          - "systemctl enable dnf-automatic.timer"
           - "ks-post-disable-coredumps.log"
           - "ks-post-modprobe-blacklist-drivers.log"
           - "ks-post-modprobe-blacklist-fs.log"
@@ -56,6 +59,7 @@ provisioner:
           - "qemu-guest-agent"
           - "intel-gpu-firmware"
           - "python3-libdnf5"
+          - "dnf5-automatic.timer"
       kickstart-fedora:
         kickstart_files:
           - dest: "/tmp/kickstart-fedora.ks"
@@ -80,9 +84,12 @@ provisioner:
           - "--hostname=fedora.kickstart.test"
           - "rootpw --lock"
           - "sshkey --username=root"
+          - "systemctl enable dnf5-automatic.timer"
+          - "reboot = when-needed"
           - "ks-post-harden-sysctl.log"
         __kickstart_test_unexpected:
           - "ks-post-systemd-disable-sleep.log"
+          - "dnf-automatic.timer"
           - "python3-dnf"
           - "python3-virt-firmware"
           - "tpm2-tools"

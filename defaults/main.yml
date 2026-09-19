@@ -108,8 +108,13 @@ kickstart_defaults:
   # system operation after installation, can be halt, reboot, poweroff, shutdown
   finish: "reboot --eject"
   # built-in post scripts from files/post/, rendered in this order; an entry
-  # in kickstart_files can switch a single script off
+  # in kickstart_files can switch a single script off. A script in the
+  # directory files/post/<distribution>-<distribution_major_version>/ takes
+  # precedence. dnf-automatic installs updates on its own and reboots Fedora
+  # hosts when needed.
   post_scripts:
+    dnf: true
+    dnf-automatic: true
     disable-coredumps: true
     modprobe-blacklist-drivers: true
     modprobe-blacklist-fs: true

@@ -70,6 +70,8 @@ argument_specs:
           packages: []
           finish: reboot --eject
           post_scripts:
+            dnf: true
+            dnf-automatic: true
             disable-coredumps: true
             modprobe-blacklist-drivers: true
             modprobe-blacklist-fs: true
@@ -219,8 +221,18 @@ argument_specs:
             type: dict
             description: Built-in post scripts from files/post/, each rendered into its
               own post section with a log file below /root/anaconda. All are enabled by
-              default; set a script to false to leave it out.
+              default; set a script to false to leave it out. A script in the directory
+              files/post/<distribution>-<distribution_major_version>/ takes precedence.
             options:
+              dnf:
+                type: bool
+                description: Keep the packaged dnf.conf as dnf.conf.rpm and write a hardened
+                  dnf.conf.
+              dnf-automatic:
+                type: bool
+                description: 'Install and enable automatic updates: dnf-automatic on AlmaLinux,
+                  dnf5-plugin-automatic on Fedora. Fedora hosts also reboot on their own
+                  when an update needs it.'
               disable-coredumps:
                 type: bool
                 description: Disable core dumps through PAM limits, systemd-coredump, systemd
@@ -409,8 +421,18 @@ argument_specs:
             type: dict
             description: Built-in post scripts from files/post/, each rendered into its
               own post section with a log file below /root/anaconda. All are enabled by
-              default; set a script to false to leave it out.
+              default; set a script to false to leave it out. A script in the directory
+              files/post/<distribution>-<distribution_major_version>/ takes precedence.
             options:
+              dnf:
+                type: bool
+                description: Keep the packaged dnf.conf as dnf.conf.rpm and write a hardened
+                  dnf.conf.
+              dnf-automatic:
+                type: bool
+                description: 'Install and enable automatic updates: dnf-automatic on AlmaLinux,
+                  dnf5-plugin-automatic on Fedora. Fedora hosts also reboot on their own
+                  when an update needs it.'
               disable-coredumps:
                 type: bool
                 description: Disable core dumps through PAM limits, systemd-coredump, systemd
