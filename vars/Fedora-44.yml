@@ -9,10 +9,20 @@ __kickstart_platform:
   repos:
     - "repo --name=fedora-updates --baseurl=https://ftp.fau.de/fedora/linux/updates/44/Everything/x86_64/ --cost=0"
 
-# Packages for a minimal Fedora 44 installation.
+# Package sets for Fedora 44, added to the common package sets of vars/main.yml.
 __kickstart_packages:
-  - "@^minimal-environment"
-  - dnf5-plugin-automatic
-  - vim-default-editor
-  - -abrt*
-  - -nano-default-editor
+  all:
+    - bash-color-prompt
+    - python3-libdnf5
+    - remove-retired-packages
+    - rpmconf
+    - symlinks
+    - vim-default-editor
+    - -rpmfusion-*
+  vm:
+    - dnf5-plugin-automatic
+    - -chrony
+  metal:
+    - python3-dnf
+  intel: []
+  amd: []

@@ -17,8 +17,9 @@ kickstart_defaults:
   # bootloader settings; the role adds --append with the kernel arguments, so
   # an --append given here is overridden
   bootloader: "bootloader --driveorder=vda --location=mbr"
-  # hardware profile selecting the kernel arguments from vars/main.yml:
-  # vm (base), intel or amd (base plus bare-metal and vendor IOMMU arguments)
+  # hardware profile selecting the package sets and kernel arguments from vars/:
+  # vm (virtual machine), intel or amd (bare metal with the vendor GPU firmware
+  # and IOMMU arguments)
   hardware: vm
   # additional kernel arguments, appended after those of the hardware profile
   kernel_cmdline: []
@@ -29,7 +30,7 @@ kickstart_defaults:
   # reqpart: "reqpart --add-boot"
   # partitions
   partitions:
-    - "part /boot/efi --ondrive=vda --size=512      --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
+    - "part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
     - "part /proc                                   --fstype=proc  --fsoptions=\"defaults,hidepid=2\""
     - "part btrfs.0   --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions=\"compress=zstd:3,noatime\""
   # logical volumes

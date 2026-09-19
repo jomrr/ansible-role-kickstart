@@ -9,7 +9,11 @@ __kickstart_platform:
   repos:
     - "repo --name=appstream --baseurl=https://repo.almalinux.org/almalinux/10/AppStream/x86_64/kickstart/"
 
-# Packages for a minimal AlmaLinux 10 installation.
+# Package sets for AlmaLinux 10, added to the common package sets of vars/main.yml.
 __kickstart_packages:
-  - "@^minimal-environment"
-  - dnf-automatic
+  all:
+    - python3-dnf
+  vm: []
+  metal: []
+  intel: []
+  amd: []

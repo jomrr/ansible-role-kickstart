@@ -62,7 +62,7 @@ kickstart_defaults:
   kernel_cmdline: []
   clearpart: clearpart --all --drives=vda
   partitions:
-    - part /boot/efi --ondrive=vda --size=512      --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
+    - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
     - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
     - part btrfs.0   --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions="compress=zstd:3,noatime"
   logvols: []
@@ -168,11 +168,14 @@ The role manages no services and has no handlers.
 - Each file is built from three layers, later ones win: the distribution values
   in vars/, then kickstart_defaults, then the kickstart_files entry.
 - distribution and distribution_major_version of an entry select the file
-  `vars/<distribution>-<distribution_major_version>.yml`. It holds the package
-  list for a minimal installation and the defaults for version, url and repos.
-  The role ships AlmaLinux-10 and Fedora-44; another release is supported by
-  adding its vars file.
-- The packages key adds to the common and distribution package lists.
+  `vars/<distribution>-<distribution_major_version>.yml`. It holds the
+  distribution package sets and the defaults for version, url and repos. The
+  role ships AlmaLinux-10 and Fedora-44; another release is supported by adding
+  its vars file.
+- Packages are built from sets: the common sets of vars/main.yml plus the sets
+  of the distribution. The hardware profile selects them: vm renders the virtual
+  machine sets, amd and intel render the bare-metal sets with the vendor GPU
+  firmware. The packages key adds further packages.
 - Kernel arguments come from the hardware profile: vm renders the base hardening
   arguments, amd and intel add the bare-metal and the vendor IOMMU arguments.
   kernel_cmdline appends further arguments. The role renders them as --append of
@@ -241,4 +244,4 @@ defaults and only set their destination, distribution and host name.
 This project is licensed under the MIT License.
 See [LICENSE](LICENSE) for the full license text.
 
-Copyright (c) 2022-2023 Jonas Mauer.
+Copyright (c) 2022-2026 Jonas Mauer.

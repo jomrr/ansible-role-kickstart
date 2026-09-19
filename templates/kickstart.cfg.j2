@@ -5,6 +5,7 @@
 {% if __kickstart_file.template | default('') | length > 0 %}
 {{ __kickstart_file.template }}
 {% else %}
+{% set __kickstart_hardware = __kickstart_hardware_profiles[__kickstart_file.hardware | default('')] | default({}) %}
 # installer basics
 {% for __kickstart_command in __kickstart_commands %}
 {{ __kickstart_command }}
@@ -17,7 +18,7 @@
 {% if __kickstart_file.bootloader | default('') | length > 0 %}
 
 # bootloader configuration
-{%  set __kickstart_kernel_args = (__kickstart_hardware_profiles[__kickstart_file.hardware | default('')] | default([])
+{%  set __kickstart_kernel_args = (__kickstart_hardware.kernel_cmdline | default([])
                                    | map('extract', __kickstart_kernel_cmdline) | flatten)
                                   + (__kickstart_file.kernel_cmdline | default([])) %}
 {{ __kickstart_file.bootloader }}{{ ' --append="' ~ (__kickstart_kernel_args | join(' ')) ~ '"' if __kickstart_kernel_args | length > 0 else '' }}
@@ -182,8 +183,11 @@ skipx
 {% endif %}
 
 # packages to install and remove
-%packages   --ignoremissing
-{{ (__kickstart_common_packages + __kickstart_packages + __kickstart_file.packages | default([])) | join("\n") }}
+{% set __kickstart_package_sets = ['all'] + __kickstart_hardware.packages | default([]) %}
+%packages {{ __kickstart_packages_options | join(' ') }}
+{{ ((__kickstart_package_sets | map('extract', __kickstart_common_packages) | flatten)
+    + (__kickstart_package_sets | map('extract', __kickstart_packages) | flatten)
+    + (__kickstart_file.packages | default([]))) | join("\n") }}
 %end
 {% if __kickstart_file.pwpolicies | default([]) | length > 0 %}
 

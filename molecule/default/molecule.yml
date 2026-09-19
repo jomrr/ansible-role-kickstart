@@ -35,7 +35,10 @@ provisioner:
         __kickstart_test_expected:
           - "zerombr"
           - "--append=\"amd_iommu=force_isolation mitigations=auto"
-          - "dnf-automatic"
+          - "--excludedocs"
+          - "python3-dnf"
+          - "tpm2-tools"
+          - "amd-gpu-firmware"
           - "--hostname=almalinux.kickstart.test"
           - "rootpw --lock"
           - "sshkey --username=root"
@@ -48,7 +51,10 @@ provisioner:
           - "ks-post-harden-sysctl.log"
           - "ks-post-systemd-disable-sleep.log"
           - "systemctl mask sleep.target"
-        __kickstart_test_unexpected: []
+        __kickstart_test_unexpected:
+          - "qemu-guest-agent"
+          - "intel-gpu-firmware"
+          - "python3-libdnf5"
       kickstart-fedora:
         kickstart_files:
           - dest: "/tmp/kickstart-fedora.ks"
@@ -64,6 +70,10 @@ provisioner:
           - "zerombr"
           - "--append=\"mitigations=auto"
           - "vsyscall=none console=ttyS0\""
+          - "--excludedocs"
+          - "qemu-guest-agent"
+          - "python3-libdnf5"
+          - "python3-virt-firmware"
           - "vim-default-editor"
           - "--hostname=fedora.kickstart.test"
           - "rootpw --lock"
@@ -71,6 +81,8 @@ provisioner:
           - "ks-post-harden-sysctl.log"
         __kickstart_test_unexpected:
           - "ks-post-systemd-disable-sleep.log"
+          - "python3-dnf"
+          - "tpm2-tools"
 verifier:
   name: "ansible"
 scenario:

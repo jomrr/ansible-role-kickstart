@@ -37,32 +37,70 @@ __kickstart_kernel_cmdline:
   intel:
     - intel_iommu=on
 
-# Argument sets rendered for each hardware profile, in this order.
+# Package sets and kernel argument sets rendered for each hardware profile, in
+# this order. The package set all is rendered for every profile.
 __kickstart_hardware_profiles:
-  vm: [base]
-  intel: [intel, base, metal]
-  amd: [amd, base, metal]
+  vm:
+    packages: [vm]
+    kernel_cmdline: [base]
+  intel:
+    packages: [metal, intel]
+    kernel_cmdline: [intel, base, metal]
+  amd:
+    packages: [metal, amd]
+    kernel_cmdline: [amd, base, metal]
 
-# Packages installed or removed on every supported distribution.
+# Options of the packages section.
+__kickstart_packages_options:
+  - --ignoremissing
+  - --exclude-weakdeps
+  - --excludedocs
+  - --inst-langs=de_DE,en_US
+
+# Package sets installed or removed on every supported distribution.
 __kickstart_common_packages:
-  - bash
-  - bash-completion
-  - dnf-plugins-core
-  - firewalld
-  - libpwquality
-  - python3
-  - python3-dnf
-  - python3-libselinux
-  - python3-libsemanage
-  - python3-pip
-  - python3-pwquality
-  - qemu-guest-agent
-  - tree
-  - vim-enhanced
-  - zstd
-  - -iw*
-  - -libsss_*
-  - -nano
-  - -setroubleshoot*
-  - -sssd*
-  - -zram-generator*
+  all:
+    - "@core"
+    - audit
+    - bash-completion
+    - cracklib
+    - cracklib-dicts
+    - firewalld
+    - libpwquality
+    - policycoreutils-python-utils
+    - python3-pwquality
+    - zstd
+    - -ModemManager-*
+    - -abrt*
+    - -avahi*
+    - -bluez*
+    - -brcmfmac-firmware
+    - -cirrus-audio-firmware
+    - -iw*
+    - -mt7xxx-firmware
+    - -nano
+    - -nodejs*
+    - -nvidia-gpu-firmware
+    - -nxpwireless-firmware
+    - -perl*
+    - -samba*
+    - -setroubleshoot*
+    - -sssd*
+    - -zram-generator-*
+  vm:
+    - python3-virt-firmware
+    - qemu-guest-agent
+    - -linux-firmware
+  metal:
+    - fwupd
+    - linux-firmware
+    - microcode_ctl
+    - nvme-cli
+    - smartmontools
+    - systemd-pam
+    - tpm2-tools
+    - tpm2-tss
+  intel:
+    - intel-gpu-firmware
+  amd:
+    - amd-gpu-firmware

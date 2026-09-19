@@ -21,7 +21,7 @@ argument_specs:
           kernel_cmdline: []
           clearpart: clearpart --all --drives=vda
           partitions:
-            - part /boot/efi --ondrive=vda --size=512      --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
+            - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
             - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
             - part btrfs.0   --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions="compress=zstd:3,noatime"
           logvols: []
@@ -102,9 +102,10 @@ argument_specs:
               - amd
               - intel
               - vm
-            description: Hardware profile selecting the kernel arguments. vm renders the
-              base hardening arguments; amd and intel add the bare-metal and the vendor
-              IOMMU arguments.
+            description: Hardware profile selecting the package sets and the kernel arguments.
+              vm renders the virtual machine packages and the base hardening arguments;
+              amd and intel render the bare-metal packages with the vendor GPU firmware
+              and add the bare-metal and vendor IOMMU arguments.
           kernel_cmdline:
             type: list
             elements: str
@@ -287,9 +288,10 @@ argument_specs:
               - amd
               - intel
               - vm
-            description: Hardware profile selecting the kernel arguments. vm renders the
-              base hardening arguments; amd and intel add the bare-metal and the vendor
-              IOMMU arguments.
+            description: Hardware profile selecting the package sets and the kernel arguments.
+              vm renders the virtual machine packages and the base hardening arguments;
+              amd and intel render the bare-metal packages with the vendor GPU firmware
+              and add the bare-metal and vendor IOMMU arguments.
           kernel_cmdline:
             type: list
             elements: str
