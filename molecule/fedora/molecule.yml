@@ -33,6 +33,7 @@ provisioner:
             luks_passphrase: "molecule-luks"
             partitions:
               - "part /boot/efi --ondrive=vda --size=2048 --fstype=efi"
+              - "part /boot --ondrive=vda --size=2048 --fstype=ext4"
               - "part btrfs.0 --ondrive=vda --size=1 --grow --fstype=btrfs --encrypted --luks-version=luks2"
             networks:
               - "network --bootproto=dhcp --hostname=almalinux.kickstart.test"

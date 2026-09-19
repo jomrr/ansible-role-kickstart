@@ -24,14 +24,13 @@ argument_specs:
           tpm2_pcrs: 7+14+15:sha256=0000000000000000000000000000000000000000000000000000000000000000
           partitions:
             - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
-            - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
+            - part /boot     --ondrive=vda --size=2048     --fstype=ext4  --fsoptions="noatime,nodev,noexec,nosuid"
             - part btrfs.0   --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions="compress=zstd:3,noatime"
           logvols: []
           volgroups: []
           btrfs_volumes:
             - btrfs none                 --label=system               btrfs.0
           btrfs_subvolumes:
-            - btrfs /boot                --subvol --name=@boot        system
             - btrfs /                    --subvol --name=@            system
             - btrfs /home                --subvol --name=@home        system
             - btrfs /opt                 --subvol --name=@opt         system

@@ -65,14 +65,13 @@ kickstart_defaults:
   tpm2_pcrs: 7+14+15:sha256=0000000000000000000000000000000000000000000000000000000000000000
   partitions:
     - part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions="umask=0077,shortname=winnt"
-    - part /proc                                   --fstype=proc  --fsoptions="defaults,hidepid=2"
+    - part /boot     --ondrive=vda --size=2048     --fstype=ext4  --fsoptions="noatime,nodev,noexec,nosuid"
     - part btrfs.0   --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions="compress=zstd:3,noatime"
   logvols: []
   volgroups: []
   btrfs_volumes:
     - btrfs none                 --label=system               btrfs.0
   btrfs_subvolumes:
-    - btrfs /boot                --subvol --name=@boot        system
     - btrfs /                    --subvol --name=@            system
     - btrfs /home                --subvol --name=@home        system
     - btrfs /opt                 --subvol --name=@opt         system
@@ -209,7 +208,12 @@ The role manages no services and has no handlers.
   comes from the hardware profile: on for amd and intel, off for vm; an entry
   can override it, for example for a virtual machine with a vTPM. It runs after
   the other scripts, does nothing without LUKS devices and aborts the
-  installation when it fails. The default storage layout is unencrypted.
+  installation when it fails.
+- The default storage layout is unencrypted. It keeps /boot on its own ext4
+  partition outside the Btrfs volume, because the installer rejects /boot on an
+  encrypted device and the TPM2 unlock happens in the initramfs. To encrypt the
+  system, add --encrypted to the btrfs.0 line of partitions and set
+  luks_passphrase.
 - Commands rendered into every file (eula, firstboot, zerombr, disabled kdump
   add-on) are not configurable.
 

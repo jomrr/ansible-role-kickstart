@@ -38,10 +38,11 @@ kickstart_defaults:
   # partitions take precedence over autopart and autopart over reqpart
   # autopart: "autopart --type=btrfs"
   # reqpart: "reqpart --add-boot"
-  # partitions
+  # partitions; /boot stays outside btrfs.0, so that btrfs.0 can be encrypted
+  # by adding --encrypted to its line
   partitions:
     - "part /boot/efi --ondrive=vda --size=2048     --fstype=efi   --fsoptions=\"umask=0077,shortname=winnt\""
-    - "part /proc                                   --fstype=proc  --fsoptions=\"defaults,hidepid=2\""
+    - "part /boot     --ondrive=vda --size=2048     --fstype=ext4  --fsoptions=\"noatime,nodev,noexec,nosuid\""
     - "part btrfs.0   --ondrive=vda --size=1 --grow --fstype=btrfs --fsoptions=\"compress=zstd:3,noatime\""
   # logical volumes
   logvols: []
@@ -52,7 +53,6 @@ kickstart_defaults:
     - "btrfs none                 --label=system               btrfs.0"
   # btrfs subvolumes
   btrfs_subvolumes:
-    - "btrfs /boot                --subvol --name=@boot        system"
     - "btrfs /                    --subvol --name=@            system"
     - "btrfs /home                --subvol --name=@home        system"
     - "btrfs /opt                 --subvol --name=@opt         system"
