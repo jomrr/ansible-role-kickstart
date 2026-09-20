@@ -9,6 +9,20 @@ __kickstart_platform:
   repos:
     - "repo --name=appstream --baseurl=https://repo.almalinux.org/almalinux/10/AppStream/x86_64/kickstart/"
 
+# pykickstart source validating files of this distribution on hosts of another
+# distribution: the upstream tag of the shipped pykickstart 3.52.12 and the
+# AlmaLinux patch that restores Btrfs for the RHEL10 syntax. The name holds the
+# pin, so a new pin builds a new source tree.
+__kickstart_validator_source:
+  name: almalinux-10-r3.52.12
+  archive:
+    url: https://github.com/pykickstart/pykickstart/archive/refs/tags/r3.52.12.tar.gz
+    checksum: sha256:7135dab9ce08c9cf0f1093cc04f9815a769da7d82ce7091bdac8e74834a8678b
+  patches:
+    - url: >-
+        https://git.almalinux.org/rpms/pykickstart/raw/commit/4b11033e2ab09d993e6350b90a4037adaa576531/0001-btrfs-Restore-support-for-Btrfs-on-RHEL10.patch
+      checksum: sha256:83017f698e1d0d8ad3c1bc66eb3d68edf80ec00ea720cfe74e093d270572b134
+
 # Package sets for AlmaLinux 10, added to the common package sets of vars/main.yml.
 __kickstart_packages:
   all:

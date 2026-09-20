@@ -235,7 +235,7 @@ skipx
 {% if __kickstart_file.post | default('') | length > 0 %}
 
 # post-install actions
-%post --log=/root/postinstall.log
+%post --interpreter=/usr/bin/bash --log=/root/anaconda/ks-postinstall.log
 {{ __kickstart_file.post }}
 %end
 {% endif %}

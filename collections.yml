@@ -1,0 +1,6 @@
+---
+# role: kickstart
+# file: collections.yml
+
+collections:
+  - name: ansible.posix

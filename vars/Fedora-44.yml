@@ -9,6 +9,16 @@ __kickstart_platform:
   repos:
     - "repo --name=fedora-updates --baseurl=https://ftp.fau.de/fedora/linux/updates/44/Everything/x86_64/ --cost=0"
 
+# pykickstart source validating files of this distribution on hosts of another
+# distribution: the upstream tag of the shipped pykickstart 3.69. The name holds
+# the pin, so a new pin builds a new source tree.
+__kickstart_validator_source:
+  name: fedora-44-r3.69
+  archive:
+    url: https://github.com/pykickstart/pykickstart/archive/refs/tags/r3.69.tar.gz
+    checksum: sha256:543d2af6025853e8224f1d5f9c628d3021f93d574880902a5ffc115541358890
+  patches: []
+
 # Package sets for Fedora 44, added to the common package sets of vars/main.yml.
 __kickstart_packages:
   all:

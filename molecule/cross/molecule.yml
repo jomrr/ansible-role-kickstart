@@ -1,6 +1,6 @@
 ---
 # role: kickstart
-# file: molecule/fedora/molecule.yml
+# file: molecule/cross/molecule.yml
 
 dependency:
   name: "galaxy"
@@ -124,10 +124,12 @@ provisioner:
 verifier:
   name: "ansible"
 scenario:
-  name: "fedora"
+  name: "cross"
 platforms:
   - pre_build_image: true
     override_command: false
     systemd: "true"
-    name: "kickstart-fedora"
+    name: "kickstart-cross"
     image: "docker.io/${uns:-jomrr}/molecule-fedora:latest"
+    groups:
+      - "kickstart_cross"

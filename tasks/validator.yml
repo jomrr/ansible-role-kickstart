@@ -1,0 +1,40 @@
+---
+# role: kickstart
+# file: tasks/validator.yml
+
+- name: KICKSTART | Create validator directory
+  ansible.builtin.file:
+    path: "{{ __kickstart_validator_path }}/src"
+    state: directory
+    mode: '0755'
+
+- name: KICKSTART | Download validator source and patches
+  ansible.builtin.get_url:
+    url: "{{ __kickstart_download.url }}"
+    dest: "{{ __kickstart_validator_path }}/{{ __kickstart_download.url | basename }}"
+    checksum: "{{ __kickstart_download.checksum }}"
+    mode: '0644'
+  loop: "{{ [__kickstart_validator_source.archive] + __kickstart_validator_source.patches }}"
+  loop_control:
+    loop_var: __kickstart_download
+    label: "{{ __kickstart_download.url | basename }}"
+
+- name: KICKSTART | Unpack validator source
+  ansible.builtin.unarchive:
+    src: "{{ __kickstart_validator_path }}/{{ __kickstart_validator_source.archive.url | basename }}"
+    dest: "{{ __kickstart_validator_path }}/src"
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    creates: "{{ __kickstart_validator_path }}/src/tools/ksvalidator.py"
+
+- name: KICKSTART | Apply validator patches
+  ansible.posix.patch:
+    src: "{{ __kickstart_validator_path }}/{{ __kickstart_patch.url | basename }}"
+    basedir: "{{ __kickstart_validator_path }}/src"
+    remote_src: true
+    strip: 1
+  loop: "{{ __kickstart_validator_source.patches }}"
+  loop_control:
+    loop_var: __kickstart_patch
+    label: "{{ __kickstart_patch.url | basename }}"

@@ -11,12 +11,15 @@
       paths:
         - "{{ role_path }}/vars"
 
+- name: KICKSTART | Provide validator of another distribution
+  ansible.builtin.include_tasks: validator.yml
+  when: __kickstart_validator == 'source'
+
 - name: KICKSTART | Render kickstart file
   ansible.builtin.template:
     src: kickstart.cfg.j2
     dest: "{{ __kickstart_file.dest }}"
     mode: '0660'
-    validate: "ksvalidator --version={{ __kickstart_file.version }} %s"
+    validate: "{{ __kickstart_validate_commands[__kickstart_validator] }}"
   vars:
-    __kickstart_file: >-
-      {{ __kickstart_platform | combine(kickstart_defaults, __kickstart_item, recursive=True) }}
+    __kickstart_file: "{{ __kickstart_platform | combine(kickstart_defaults, __kickstart_item, recursive=True) }}"

@@ -1,0 +1,16 @@
+---
+# role: kickstart
+# file: molecule/resources/playbooks/prepare.yml
+
+- name: KICKSTART | Prepare the host that validates another distribution
+  hosts: kickstart_cross
+  gather_facts: false
+  tasks:
+    - name: KICKSTART | Install the tools that unpack and patch the validator source
+      become: true
+      become_user: root
+      ansible.builtin.package:
+        name:
+          - patch
+          - tar
+        state: present

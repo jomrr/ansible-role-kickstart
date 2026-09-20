@@ -4,6 +4,9 @@
 
 dependency:
   name: "galaxy"
+  options:
+    role-file: "${MOLECULE_PROJECT_DIRECTORY}/collections.yml"
+    requirements-file: "${MOLECULE_PROJECT_DIRECTORY}/collections.yml"
 driver:
   name: "podman"
 provisioner:
@@ -22,8 +25,22 @@ provisioner:
   playbooks:
     converge: "../resources/playbooks/converge.yml"
     verify: "../resources/playbooks/verify.yml"
+    prepare: "../resources/playbooks/prepare.yml"
   inventory:
     host_vars:
+      kickstart-cross:
+        kickstart_files:
+          - dest: "/tmp/kickstart-cross.ks"
+            distribution: "AlmaLinux"
+            distribution_major_version: "10"
+            networks:
+              - "network --bootproto=dhcp --hostname=cross.kickstart.test"
+        __kickstart_test_expected:
+          - "#version=RHEL10"
+          - "--fstype=btrfs"
+          - "--hostname=cross.kickstart.test"
+        __kickstart_test_unexpected:
+          - "vim-default-editor"
       kickstart-almalinux:
         kickstart_files:
           - dest: "/tmp/kickstart-almalinux.ks"

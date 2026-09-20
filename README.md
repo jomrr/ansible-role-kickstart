@@ -22,6 +22,8 @@ with unchanged input report no change.
 ### Managed
 
 - Installation of pykickstart on the host running the role.
+- A patched pykickstart source tree per distribution that differs from the host,
+  used only for validation.
 - One validated kickstart file per entry in kickstart_files.
 
 ### Not Managed
@@ -32,13 +34,18 @@ with unchanged input report no change.
 
 ## Requirements
 
-- Run the role on a host whose distribution matches the kickstart files, because
-  ksvalidator must know their syntax version, see ksvalidator -l. Fedora 44
-  files need a Fedora host: the pykickstart of AlmaLinux 10.2 knows Fedora
-  versions up to F40.
-- AlmaLinux files with a Btrfs layout, which is the default layout, need
-  AlmaLinux 10.2 or later. Only its pykickstart build carries the patch that
-  restores Btrfs for the RHEL10 syntax; other builds reject it.
+- The role reads the distribution and the home directory of the host, so the
+  play must gather facts.
+- Files of a distribution other than that of the host need python3, tar and
+  patch on the host, and network access to github.com and git.almalinux.org when
+  their validator is set up for the first time.
+
+## Dependencies
+
+```yaml
+collections:
+  - name: ansible.posix
+```
 
 ## Role Variables
 
@@ -140,6 +147,9 @@ kickstart_files: []
 
 - `<dest>` Every kickstart_files entry names its own absolute destination path;
   files are written with mode 0660.
+- `~/.cache/kickstart-validator/<distribution>-<version>-<tag>/` pykickstart
+  source tree of another distribution, downloaded with checksums; a new pin
+  creates a new directory.
 
 ## Check Mode
 
@@ -172,6 +182,12 @@ The role manages no services and has no handlers.
 
 ## Operational Notes
 
+- The validator is chosen per file. A file of the host's own distribution is
+  validated with the ksvalidator of the host. A file of another distribution is
+  validated with the pykickstart source of that distribution: the upstream tag
+  of its shipped package, for AlmaLinux with the patch that restores Btrfs for
+  the RHEL10 syntax. This is why a Fedora host can validate AlmaLinux files with
+  a Btrfs layout and an AlmaLinux host can validate Fedora 44 files.
 - Each file is built from three layers, later ones win: the distribution values
   in vars/, then kickstart_defaults, then the kickstart_files entry.
 - distribution and distribution_major_version of an entry select the file
@@ -228,13 +244,13 @@ The role manages no services and has no handlers.
 
 ### Generate AlmaLinux and Fedora kickstart files
 
-Each play runs on a host of the matching distribution. The files use the
+One host generates the files of both distributions. The files use the
 defaults and only set their destination, distribution and host name.
 
 ```yaml
-- name: Generate AlmaLinux kickstart files
-  hosts: almalinux_host
-  gather_facts: false
+- name: Generate kickstart files
+  hosts: localhost
+  gather_facts: true
   roles:
     - role: jomrr.kickstart
       kickstart_files:
@@ -243,13 +259,6 @@ defaults and only set their destination, distribution and host name.
           distribution_major_version: "10"
           networks:
             - "network --bootproto=dhcp --hostname=alma.example.com"
-
-- name: Generate Fedora kickstart files
-  hosts: fedora_host
-  gather_facts: false
-  roles:
-    - role: jomrr.kickstart
-      kickstart_files:
         - dest: /srv/kickstart/fedora.example.com.ks
           distribution: Fedora
           distribution_major_version: "44"

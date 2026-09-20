@@ -2,6 +2,25 @@
 # role: kickstart
 # file: vars/main.yml
 
+# Validator of a kickstart file. The ksvalidator of the host validates files of
+# its own distribution. Files of another distribution are validated with the
+# pykickstart source tree of their distribution, see __kickstart_validator_source
+# in the distribution files.
+__kickstart_validator: >-
+  {{ (__kickstart_item.distribution == ansible_facts.distribution) | ternary('native', 'source') }}
+
+# Directory of the pykickstart source tree of one distribution.
+__kickstart_validator_path: >-
+  {{ ansible_facts.user_dir }}/.cache/kickstart-validator/{{ __kickstart_validator_source.name }}
+
+# Validate commands of the template task, selected by __kickstart_validator.
+__kickstart_validate_commands:
+  native: "ksvalidator --version={{ __kickstart_file.version }} %s"
+  source: >-
+    env PYTHONPATH={{ __kickstart_validator_path }}/src
+    python3 {{ __kickstart_validator_path }}/src/tools/ksvalidator.py
+    --version={{ __kickstart_file.version }} %s
+
 # Commands rendered into every kickstart file.
 __kickstart_commands:
   - "eula --agreed"
