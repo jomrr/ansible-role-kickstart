@@ -2,6 +2,13 @@
 # role: kickstart
 # file: defaults/main.yml
 
+# Install pykickstart on the executing host. It provides the ksvalidator for
+# files of the host's own distribution and the requests module the validators
+# of other distributions need. Requires root privileges. Can be switched off
+# once the host meets these requirements, which saves the package check.
+kickstart_install: true
+# kickstart_install: false
+
 # Values shared by all kickstart files. Every key can be overridden per entry
 # in kickstart_files. A key that is empty or missing omits its section.
 kickstart_defaults:

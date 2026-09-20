@@ -21,7 +21,8 @@ with unchanged input report no change.
 
 ### Managed
 
-- Installation of pykickstart on the host running the role.
+- Installation of pykickstart on the host running the role, unless
+  kickstart_install is false.
 - A patched pykickstart source tree per distribution that differs from the host,
   used only for validation.
 - One validated kickstart file per entry in kickstart_files.
@@ -37,6 +38,9 @@ with unchanged input report no change.
 - Files of a distribution other than that of the host need python3, tar and
   patch on the host, and network access to github.com and git.almalinux.org when
   their validator is set up for the first time.
+- With kickstart_install set to false the host must already provide what
+  pykickstart brings: ksvalidator for files of its own distribution, and the
+  requests module for python3 for files of other distributions.
 
 ## Dependencies
 
@@ -46,6 +50,21 @@ collections:
 ```
 
 ## Role Variables
+
+### `kickstart_install`
+
+Type: `bool`. Required: `false`.
+
+Install pykickstart on the executing host. It provides the ksvalidator for files
+of the host's own distribution and the requests module the validators of other
+distributions need. Requires root privileges. Can be switched off once the host
+meets these requirements.
+
+Default:
+
+```yaml
+kickstart_install: true
+```
 
 ### `kickstart_defaults`
 
@@ -190,6 +209,9 @@ The role manages no services and has no handlers.
   executes its tasks by itself and needs no play facts. This also holds when the
   tasks are delegated, for example to the controller for an inventory host that
   is not installed yet.
+- On a host of any other distribution, for example openSUSE, every file is
+  validated with a pykickstart source tree. kickstart_install must be false
+  there, because the role only knows the package name of AlmaLinux and Fedora.
 - Each file is built from three layers, later ones win: the distribution values
   in vars/, then kickstart_defaults, then the kickstart_files entry.
 - distribution and distribution_major_version of an entry select the file

@@ -21,6 +21,7 @@
   ansible.builtin.package:
     name: pykickstart
     state: present
+  when: kickstart_install
 
 - name: KICKSTART | Create kickstart files
   ansible.builtin.include_tasks: file.yml

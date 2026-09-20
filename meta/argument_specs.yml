@@ -6,6 +6,14 @@ argument_specs:
   main:
     short_description: Generate validated kickstart files for AlmaLinux and Fedora.
     options:
+      kickstart_install:
+        type: bool
+        default: true
+        description:
+          - Install pykickstart on the executing host. It provides the ksvalidator for files
+            of the host's own distribution and the requests module the validators of other
+            distributions need. Requires root privileges. Can be switched off once the host
+            meets these requirements.
       kickstart_defaults:
         type: dict
         description:
