@@ -34,8 +34,6 @@ with unchanged input report no change.
 
 ## Requirements
 
-- The role reads the distribution and the home directory of the host, so the
-  play must gather facts.
 - Files of a distribution other than that of the host need python3, tar and
   patch on the host, and network access to github.com and git.almalinux.org when
   their validator is set up for the first time.
@@ -188,6 +186,10 @@ The role manages no services and has no handlers.
   of its shipped package, for AlmaLinux with the patch that restores Btrfs for
   the RHEL10 syntax. This is why a Fedora host can validate AlmaLinux files with
   a Btrfs layout and an AlmaLinux host can validate Fedora 44 files.
+- The role gathers the distribution and the home directory of the host that
+  executes its tasks by itself and needs no play facts. This also holds when the
+  tasks are delegated, for example to the controller for an inventory host that
+  is not installed yet.
 - Each file is built from three layers, later ones win: the distribution values
   in vars/, then kickstart_defaults, then the kickstart_files entry.
 - distribution and distribution_major_version of an entry select the file
@@ -250,7 +252,7 @@ defaults and only set their destination, distribution and host name.
 ```yaml
 - name: Generate kickstart files
   hosts: localhost
-  gather_facts: true
+  gather_facts: false
   roles:
     - role: jomrr.kickstart
       kickstart_files:

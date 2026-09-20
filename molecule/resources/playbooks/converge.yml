@@ -2,8 +2,8 @@
 # role: kickstart
 # file: molecule/resources/playbooks/converge.yml
 
-- name: "Molecule | converge | kickstart"
+- name: KICKSTART | Converge without play facts
   hosts: all
-  gather_facts: true
+  gather_facts: false
   roles:
     - role: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"

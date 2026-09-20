@@ -2,16 +2,16 @@
 # role: kickstart
 # file: vars/main.yml
 
-# Validator of a kickstart file. The ksvalidator of the host validates files of
-# its own distribution. Files of another distribution are validated with the
-# pykickstart source tree of their distribution, see __kickstart_validator_source
-# in the distribution files.
-__kickstart_validator: >-
-  {{ (__kickstart_item.distribution == ansible_facts.distribution) | ternary('native', 'source') }}
+# Validator of a kickstart file. The ksvalidator of the executing host validates
+# files of its own distribution. Files of another distribution are validated
+# with the pykickstart source tree of their distribution, see
+# __kickstart_validator_source in the distribution files. __kickstart_host holds
+# the facts of the host that executes the tasks, which differs from the
+# inventory host when the tasks are delegated.
+__kickstart_validator: "{{ (__kickstart_item.distribution == __kickstart_host.ansible_facts.ansible_distribution) | ternary('native', 'source') }}"
 
 # Directory of the pykickstart source tree of one distribution.
-__kickstart_validator_path: >-
-  {{ ansible_facts.user_dir }}/.cache/kickstart-validator/{{ __kickstart_validator_source.name }}
+__kickstart_validator_path: "{{ __kickstart_host.ansible_facts.ansible_user_dir }}/.cache/kickstart-validator/{{ __kickstart_validator_source.name }}"
 
 # Validate commands of the template task, selected by __kickstart_validator.
 __kickstart_validate_commands:
