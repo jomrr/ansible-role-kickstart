@@ -84,6 +84,7 @@ argument_specs:
             modprobe-blacklist-drivers: true
             modprobe-blacklist-fs: true
             modprobe-blacklist-net: true
+            harden-dev-shm: true
             harden-sysctl-net-ipv4: true
             harden-sysctl-net-ipv6: true
             harden-sysctl: true
@@ -267,6 +268,10 @@ argument_specs:
               modprobe-blacklist-net:
                 type: bool
                 description: Block rarely used network protocol modules.
+              harden-dev-shm:
+                type: bool
+                description: Harden the /dev/shm mount by adding it to /etc/fstab with nodev,
+                  nosuid, and noexec options.
               harden-sysctl-net-ipv4:
                 type: bool
                 description: Write the IPv4 hardening sysctl settings.
@@ -486,6 +491,10 @@ argument_specs:
               modprobe-blacklist-net:
                 type: bool
                 description: Block rarely used network protocol modules.
+              harden-dev-shm:
+                type: bool
+                description: Harden the /dev/shm mount by adding it to /etc/fstab with nodev,
+                  nosuid, and noexec options.
               harden-sysctl-net-ipv4:
                 type: bool
                 description: Write the IPv4 hardening sysctl settings.

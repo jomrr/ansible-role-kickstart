@@ -134,6 +134,7 @@ kickstart_defaults:
     modprobe-blacklist-drivers: true
     modprobe-blacklist-fs: true
     modprobe-blacklist-net: true
+    harden-dev-shm: true
     harden-sysctl-net-ipv4: true
     harden-sysctl-net-ipv6: true
     harden-sysctl: true
@@ -143,20 +144,46 @@ kickstart_defaults:
     # tpm-cryptenroll: true
   # additional post-install actions, rendered after the built-in post scripts
   # post: |-
-  #   cat << EOF >> /etc/modprobe.d/hardening.conf
-  #   install cramfs /bin/true
-  #   install freevxfs /bin/true
-  #   install jffs2 /bin/true
-  #   install hfs /bin/true
-  #   install hfsplus /bin/true
-  #   install squashfs /bin/true
-  #   install udf /bin/true
-  #   install dccp /bin/true
-  #   install sctp /bin/true
-  #   install rds /bin/true
-  #   install tipc /bin/true
-  #   install usb_storage /bin/true
-  #   EOF
+      # set -euo pipefail
+      #
+      # # kickstart btrfs has no --fsoptions; set per-subvolume options here
+      # base="compress=zstd:3,noatime"
+      # declare -A mntopts=(
+      #   ["/"]=""
+      #   ["/home"]="nodev,noexec,nosuid"
+      #   ["/opt"]="nodev,nosuid"
+      #   ["/srv"]="nodev,nosuid"
+      #   ["/tmp"]="nodev,noexec,nosuid"
+      #   ["/var"]="nodev,noexec,nosuid"
+      #   ["/var/lib"]="nodev,nosuid"
+      #   ["/var/lib/containers"]="nodev"
+      #   ["/var/lib/machines"]="nodev"
+      #   ["/var/lib/portables"]="nodev"
+      #   ["/var/log"]="nodev,nosuid,noexec"
+      #   ["/var/log/audit"]="nodev,noexec,nosuid"
+      #   ["/var/spool/mail"]="nodev,noexec,nosuid"
+      #   ["/var/tmp"]="nodev,noexec,nosuid"
+      #   ["/var/www"]="nodev,noexec,nosuid"
+      # )
+      # for mp in "${!mntopts[@]}"; do
+      #   o="${base}${mntopts[$mp]:+,${mntopts[$mp]}}"
+      #   awk -v mp="$mp" -v o="$o" 'BEGIN { OFS = "\t" }
+      #     $2 == mp && $3 == "btrfs" {
+      #       n = split($4, a, ","); s = ""
+      #       for (i = 1; i <= n; i++) if (a[i] ~ /^subvol=/) s = a[i]
+      #       $4 = s "," o
+      #     }
+      #     { print }' /etc/fstab > /etc/fstab.tmp
+      #   mv /etc/fstab.tmp /etc/fstab
+      # done
+      #
+      # # subvolumes share one pool; enforce space isolation (squota, kernel >= 6.7)
+      # btrfs quota enable --simple /
+      # btrfs qgroup limit 10G /var/log/audit
+      # btrfs qgroup limit 10G /var/log
+      # btrfs qgroup limit 8G  /tmp
+      # btrfs qgroup limit 8G  /var/tmp
+      # %end
   # If you define template, only this will be used
   # template:
 

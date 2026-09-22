@@ -141,6 +141,7 @@ kickstart_defaults:
     modprobe-blacklist-drivers: true
     modprobe-blacklist-fs: true
     modprobe-blacklist-net: true
+    harden-dev-shm: true
     harden-sysctl-net-ipv4: true
     harden-sysctl-net-ipv6: true
     harden-sysctl: true
