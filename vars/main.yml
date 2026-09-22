@@ -105,6 +105,7 @@ __kickstart_common_packages:
     - libpwquality
     - policycoreutils-python-utils
     - python3-pwquality
+    - vim-enhanced
     - zstd
     - -ModemManager-*
     - -abrt*
