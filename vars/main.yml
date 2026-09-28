@@ -97,6 +97,7 @@ __kickstart_packages_options:
 __kickstart_common_packages:
   all:
     - "@core"
+    - acl
     - audit
     - bash-completion
     - cracklib
